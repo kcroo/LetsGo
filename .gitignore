@@ -1,0 +1,5 @@
+.vscode/settings.json
+__pychache__
+venv
+__pycache__/app.cpython-36.pyc
+__pycache__/run.cpython-36.pyc

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>MySQL Results</title>
+{% endblock %}
+
+{% block body %}
+<h1>MySQL Results:</h1>
+{% for r in result %}
+<p>{{r}}</p>
+{% endfor %}
+{% endblock %}
