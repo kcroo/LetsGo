@@ -8,7 +8,7 @@
 #   https://flask.palletsprojects.com/en/1.0.x/
 ##############################################################################
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 
 # start flask app
