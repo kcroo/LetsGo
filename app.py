@@ -25,14 +25,7 @@ db = MySQL(app)
 # index route
 @app.route('/')
 def index():
-    cur = db.connection.cursor()
-    cur.execute("DROP TABLE IF EXISTS diagnostic")
-    cur.execute("CREATE TABLE diagnostic(id INT PRIMARY KEY, text VARCHAR(255) NOT NULL)")
-    cur.execute("INSERT INTO diagnostic (text) VALUES (%s)", ("MySQL is working",))
-    cur.execute("SELECT * FROM diagnostic")
-    result = cur.fetchall()
-    cur.close()
-    return render_template("index.html", result=result)
+    return render_template("index.html", result="Hello, world!!!")
 
 if __name__ == "__main__":
     app.run(debug=True)
