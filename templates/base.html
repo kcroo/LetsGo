@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Damion&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
+    <div class="grid">
+        <div id="logo"><p>Let's Go!</p></div>
+        <div>My Trips</div>
+        <div>Log In</div>
+    </div>
     {% block body %}{% endblock %}
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
