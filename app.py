@@ -22,10 +22,9 @@ app.config["MYSQL_DB"] = "cs340_corraok"
 
 db = MySQL(app)
 
+
+
 # index route
 @app.route('/')
 def index():
-    return render_template("index.html", result="Hello, world!!!")
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    return render_template("index.html", result="Goodbye, world!!!")
