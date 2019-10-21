@@ -1,5 +1,10 @@
-h1
+.menu
 {
-    color: red;
-    font-family: 'Trebuchet MS';
+    background: aqua;
+    border-bottom: 2px solid black;
+}
+
+#title
+{
+    font-family: 'Damion', cursive;
 }

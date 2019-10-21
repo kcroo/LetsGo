@@ -1,1 +1,1 @@
-alert("i'm connected!")
+console.log("i'm connected!")
