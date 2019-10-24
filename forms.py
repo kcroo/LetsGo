@@ -5,7 +5,7 @@
 # Default values: https://stackoverflow.com/questions/21314068/wtforms-field-defaults-suddenly-dont-work
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange
@@ -24,3 +24,7 @@ class NewTrip(FlaskForm):
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     submit = SubmitField('Create New User')
+
+class SwitchUser(FlaskForm):
+    user = SelectField('Users', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Switch User')
