@@ -10,16 +10,14 @@
 
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
+from forms import NewTrip
+from config import Config 
 
 # start flask app
 app = Flask(__name__)
 
-# log in info for database (can put in own file later)
-app.config["MYSQL_HOST"] = "classmysql.engr.oregonstate.edu"
-app.config["MYSQL_USER"] = "cs340_corraok"
-app.config["MYSQL_PASSWORD"] = "1298"
-app.config["MYSQL_DB"] = "cs340_corraok"
-
+# set up database info and secret key 
+app.config.from_object(Config)
 db = MySQL(app)
 
 # index route
@@ -35,4 +33,5 @@ def myTrips():
 # new trip 
 @app.route('/newtrip')
 def newTrip():
-    return render_template("newtrip.html", title="- New Trip", result="Make new trip here")
+    form = NewTrip()
+    return render_template("newtrip.html", title="- New Trip", form=form)

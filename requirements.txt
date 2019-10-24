@@ -4,3 +4,4 @@ werkzeug
 gunicorn
 mysqlclient
 flask_mysqldb
+flask_wtf

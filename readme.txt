@@ -7,7 +7,7 @@ source ./venv/bin/activate
 
 - upgrade pip3 and install packages 
 pip3 install --upgrade pip
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt                # does this work? might need to change this 
 
 
 RUN SERVER ON FLIP (WITH DEBUG)

@@ -4,5 +4,28 @@
 {% endblock %}
 
 {% block body %}
-<p>{{result}}</p>
+<div class="container">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Add New Trip</legend>
+            <div class="form-group">
+                {{ form.tripName.label(class="form-control-label") }}
+                {{ form.tripName(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.numberOfPeople.label(class="form-control-label") }}
+                {{ form.numberOfPeople(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.startDate.label(class="form-control-label") }}
+                {{ form.startDate(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.endDate.label(class="form-control-label") }}
+                {{ form.endDate(class="form-control") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
 {% endblock %}
