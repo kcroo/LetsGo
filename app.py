@@ -22,14 +22,17 @@ app.config["MYSQL_DB"] = "cs340_corraok"
 
 db = MySQL(app)
 
-
-
 # index route
 @app.route('/')
 def index():
-    return render_template("index.html", title="", result="Goodbye, world!!!")
+    return render_template("index.html", title="", result="Amazing trip planner!!")
+
+# new trip 
+@app.route('/mytrips')
+def myTrips():
+    return render_template("mytrips.html", title="- My Trips", result="Trips appear here")
 
 # new trip 
 @app.route('/newtrip')
 def newTrip():
-    return render_template("newtrip.html", title="- New Trip", result="")
+    return render_template("newtrip.html", title="- New Trip", result="Make new trip here")
