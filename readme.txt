@@ -24,6 +24,10 @@ python -m flask run -h 0.0.0.0 -p 5472
 - run server persistently (replace #### with port number)
 gunicorn run:app -b 0.0.0.0:#### -D
 
+- log in to VPN to see website 
+ex: http://flip2.engr.oregonstate.edu:5472/ 
+    where 5472 is port number 
+
 
 POSSIBLE ISSUES 
 
