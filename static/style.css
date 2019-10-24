@@ -8,3 +8,10 @@
 {
     font-family: 'Damion', cursive;
 }
+
+.required::before  
+{   
+    color: red;
+    font-weight: bold;
+    content: " *";
+}
