@@ -11,7 +11,7 @@
 
 from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
-from forms import NewTrip, NewUser, SwitchUser
+from forms import NewTrip, AddDestination, NewUser, SwitchUser
 from config import Config 
 
 # start flask app
@@ -33,9 +33,18 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # shows individual trip
-@app.route('/trip/<tripName>')
+@app.route('/trip/<tripName>', methods=['GET', 'POST'])
 def showTrip(tripName):
-    return render_template("mytrips.html", title="- My Trips", tripName=tripName)
+    ### fill destinations with db results later
+    if tripName == 'Cascade Lakes':
+        destinations = ['Mt Bachelor', 'Devil\'s Lake']
+    elif tripName == 'China':
+        destinations = ['Beijing', 'Harbin']
+    elif tripName == 'Oregon Coast':
+        destinations = ['Florence', 'Newport']
+
+    form = AddDestination()
+    return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
