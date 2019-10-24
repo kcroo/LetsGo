@@ -20,3 +20,7 @@ class NewTrip(FlaskForm):
     startDate = DateField('Start Date', default=tomorrow)
     endDate = DateField('End Date', default=nextWeek)
     submit = SubmitField('Create Trip')
+
+class NewUser(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
+    submit = SubmitField('Create New User')

@@ -10,7 +10,7 @@
 
 from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
-from forms import NewTrip
+from forms import NewTrip, NewUser
 from config import Config 
 
 # start flask app
@@ -25,20 +25,25 @@ db = MySQL(app)
 def index():
     return render_template("index.html", title="", result="Amazing trip planner!!")
 
-# my trip 
+# shows all trips
 @app.route('/mytrips')
 def myTrips():
     trips = ['Cascade Lakes', 'China', 'Oregon Coast']
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
-# my trip 
+# shows individual trip
 @app.route('/trip/<tripName>')
 def showTrip(tripName):
-    #return render_template("mytrips.html", title="- My Trips")
     return render_template("mytrips.html", title="- My Trips", tripName=tripName)
 
-# new trip 
+# make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
 def newTrip():
     form = NewTrip()
     return render_template("newtrip.html", title="- New Trip", form=form)
+
+# add new user 
+@app.route('/newuser', methods=['GET', 'POST'])
+def newUser():
+    form = NewUser()
+    return render_template("newuser.html", title=" - New User", form=form)
