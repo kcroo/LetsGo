@@ -1,4 +1,6 @@
 Flask
+jinja2
+werkzeug
 gunicorn
 mysqlclient
 flask_mysqldb
