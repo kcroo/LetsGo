@@ -4,5 +4,17 @@
 {% endblock %}
 
 {% block body %}
-<p>{{result}}</p>
+
+{% if trips %}
+<ul>
+    {% for trip in trips %}
+        <li><a href="{{ url_for('showTrip', tripName=trip) }}">{{ trip }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if tripName %}
+<h1>{{ tripName }}</h1>
+{% endif %}
+
 {% endblock %}
