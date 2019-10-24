@@ -31,7 +31,7 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", result="Trips appear here")
 
 # new trip 
-@app.route('/newtrip')
+@app.route('/newtrip', methods=['GET', 'POST'])
 def newTrip():
     form = NewTrip()
     return render_template("newtrip.html", title="- New Trip", form=form)
