@@ -27,4 +27,9 @@ db = MySQL(app)
 # index route
 @app.route('/')
 def index():
-    return render_template("index.html", result="Goodbye, world!!!")
+    return render_template("index.html", title="", result="Goodbye, world!!!")
+
+# new trip 
+@app.route('/newtrip')
+def newTrip():
+    return render_template("newtrip.html", title="- New Trip", result="")
