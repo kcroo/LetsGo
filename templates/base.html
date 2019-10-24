@@ -15,36 +15,18 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
+            <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link active" href="/">Home<span class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="/trips">My Trips</a>
-                <a class="nav-item nav-link" href="/new">New Trip</a>
-                <a class="nav-item nav-link" href="/switch">Switch User</a>
+                <a class="nav-item nav-link" href="/newtrip">New Trip</a>
+            </div>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-item nav-link" href="/newuser">New User</a>
+                <a class="nav-item nav-link" href="/switchuser">Switch User</a>
             </div>
         </div>
     </nav>
-    <!-- <div class="container-fluid menu">
-        <div class="row align-items-center">
-            <div class="col-2" id="title">
-                <h1>Let's Go!</h1> 
-            </div>
-
-            <div class="col-1">
-                Home
-            </div>
-            <div class="col-1">
-                My Trips 
-            </div>
-
-            <div class="col-1">
-                New Trip
-            </div>
-
-            <div class="col text-right">
-                Switch User 
-            </div>
-        </div>
-    </div> -->
+    
     {% block body %}{% endblock %}
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
