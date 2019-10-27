@@ -4,47 +4,65 @@
 {% endblock %}
 
 {% block body %}
-
-{% if trips %}
-    <div class="container">
+<div class="container">
+    <!-- lists trip names, with edit/delte buttons -->
+    {% if trips %}
         <h1>My Trips</h1>
         <table class="table">
-                <thead>
+            <thead>
+                <tr>
+                    <th>Trip Name</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for trip in trips %}
                     <tr>
-                        <th>Trip Name</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr> 
-                </thead>
-                <tbody>
-                    {% for trip in trips %}
-                        <tr>
-                            {% for key, value in trip.items() %}
-                                <td>
-                                    {{ key }}
-                                </td>
-                                <td>
-                                    <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">Edit</a>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger">Delete</button>
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
+                        {% for key, value in trip.items() %}
+                            <td>
+                                {{ key }}
+                            </td>
+                            <td>
+                                <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">Edit</a>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
-    </div> 
-{% endif %}
+    {% endif %}
 
-{% if tripName %}
-    <div class="container">
+    <!-- lists destinations, with edit/delete buttons and add destination form -->
+    {% if tripName %}
         <h1>{{ tripName }}</h1>
-
+        <table class="table">
+            <thead>
+                <th>Destination Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+                {% for d in destinations %}
+                    <tr>
+                        <td>
+                            {{ d }}
+                        </td>
+                        <td>
+                            <button class="btn btn-warning">Edit</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         <ul>
-            {% for d in destinations %}
-                <li>{{ d }}</li>
-            {% endfor %}
+            
         </ul>
 
         <form action="" method="post">
@@ -68,8 +86,8 @@
                 </div>
             </fieldset>
         </form>
-    </div>
 
-{% endif %}
+    {% endif %}
 
+</div>
 {% endblock %}

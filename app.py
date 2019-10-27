@@ -25,7 +25,7 @@ db = MySQL(app)
 trips = [
     {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
     {'China': ['Beijing', 'Harbin']},
-    {'Oregon Coast': ['Beijing', 'Harbin']}
+    {'Oregon Coast': ['Florence', 'Newport']}
 ]
 
 
