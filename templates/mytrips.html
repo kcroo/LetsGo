@@ -8,7 +8,15 @@
 {% if trips %}
     <ul>
         {% for trip in trips %}
-            <li><a href="{{ url_for('showTrip', tripName=trip) }}">{{ trip }}</a></li>
+            <li>
+               
+                    {% for key, value in trip.items() %}
+                        <a href="{{ url_for('showTrip', tripName=key) }}"> 
+                        {{ key }}
+                        </a>
+                    {% endfor %}
+               
+            </li>
         {% endfor %}
     </ul>
 {% endif %}
@@ -22,7 +30,6 @@
                 <li>{{ d }}</li>
             {% endfor %}
         </ul>
-
 
         <form action="" method="post">
             {{ form.hidden_tag() }}

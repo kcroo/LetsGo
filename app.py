@@ -21,6 +21,14 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = MySQL(app)
 
+#### dummy data: take out when database is working ####
+trips = [
+    {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
+    {'China': ['Beijing', 'Harbin']},
+    {'Oregon Coast': ['Beijing', 'Harbin']}
+]
+
+
 # index route
 @app.route('/')
 def index():
@@ -29,19 +37,17 @@ def index():
 # shows all trips
 @app.route('/mytrips')
 def myTrips():
-    trips = ['Cascade Lakes', 'China', 'Oregon Coast']
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # shows individual trip
 @app.route('/trip/<tripName>', methods=['GET', 'POST'])
 def showTrip(tripName):
     ### fill destinations with db results later
-    if tripName == 'Cascade Lakes':
-        destinations = ['Mt Bachelor', 'Devil\'s Lake']
-    elif tripName == 'China':
-        destinations = ['Beijing', 'Harbin']
-    elif tripName == 'Oregon Coast':
-        destinations = ['Florence', 'Newport']
+    destinations = None 
+    for trip in trips: 
+        for key, values in trip.items():
+            if key == tripName: 
+                destinations = values
 
     form = AddDestination()
     return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)
