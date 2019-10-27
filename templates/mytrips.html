@@ -6,19 +6,35 @@
 {% block body %}
 
 {% if trips %}
-    <ul>
-        {% for trip in trips %}
-            <li>
-               
-                    {% for key, value in trip.items() %}
-                        <a href="{{ url_for('showTrip', tripName=key) }}"> 
-                        {{ key }}
-                        </a>
+    <div class="container">
+        <h1>My Trips</h1>
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th>Trip Name</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    {% for trip in trips %}
+                        <tr>
+                            {% for key, value in trip.items() %}
+                                <td>
+                                    {{ key }}
+                                </td>
+                                <td>
+                                    <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">Edit</a>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger">Delete</button>
+                                </td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
-               
-            </li>
-        {% endfor %}
-    </ul>
+                </tbody>
+        </table>
+    </div> 
 {% endif %}
 
 {% if tripName %}
