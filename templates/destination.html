@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>{{ tripName }} - {{ destName }}</h1>
+    <table class="table">
+        <thead>
+            <th>Activity Name</th>
+            <th>Activity Type</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+            {% if activities %}
+                {% for act in activities %}
+                    {% for key, value in act.items() %}
+                        <tr>
+                            <td>
+                                {{ key }}
+                            </td>
+                            <td>
+                                {{ value }}
+                            </td>
+                            <td>
+                                <a class= "btn btn-warning" href="#">Edit</a>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

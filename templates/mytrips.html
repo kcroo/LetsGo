@@ -52,7 +52,7 @@
                             {{ d }}
                         </td>
                         <td>
-                            <button class="btn btn-warning">Edit</button>
+                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>

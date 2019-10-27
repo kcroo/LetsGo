@@ -28,6 +28,25 @@ trips = [
     {'Oregon Coast': ['Florence', 'Newport']}
 ]
 
+allActivities = [
+    {
+        'Mt Bachelor':
+        [{'Phil\'s Trailhead': 'Mountain biking'}, {'South Sister Summit': 'Hiking'}]
+    },
+    {
+        'Devil\'s Lake':
+        [{'South Sister Summit': 'Hiking'}, {'Trout Fishing': 'Fishing'}]
+    },
+    {
+        'Beijing':
+        [{'Forbidden Palace': 'Sightseeing'}, {'Great Wall': 'Sightseeing'}]
+    },
+    {
+        'Harbin':
+        [{'Ice Festival': 'Sightseeing'}, {'Harbin Brewery Tour': 'Sightseeing'}]
+    }
+]
+
 
 # index route
 @app.route('/')
@@ -51,6 +70,18 @@ def showTrip(tripName):
 
     form = AddDestination()
     return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)
+
+# shows individual destination and its activities
+@app.route('/trip/<tripName>/<destName>', methods=['GET', 'POST'])
+def showDestination(tripName, destName):
+    ### fill with db results later
+    activities = None 
+    for a in allActivities:
+        for key, values in a.items(): 
+            if key == destName: 
+                    activities = values 
+
+    return render_template("destination.html", title="- ", tripName=tripName, destName=destName, activities=activities)
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
