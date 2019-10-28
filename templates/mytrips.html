@@ -5,7 +5,7 @@
 
 {% block body %}
 <div class="container">
-    <!-- lists trip names, with edit/delte buttons -->
+    <!-- lists trip names, with edit/delete buttons -->
     {% if trips %}
         <h1>My Trips</h1>
         <table class="table">
@@ -18,8 +18,8 @@
             </thead>
             <tbody>
                 {% for trip in trips %}
-                    <tr>
-                        {% for key, value in trip.items() %}
+                    {% for key, value in trip.items() %}
+                        <tr data-toggle="collapse" data-target="#{{key.replace(' ', '-')}}Destinations"  class="clickable">
                             <td>
                                 {{ key }}
                             </td>
@@ -29,8 +29,11 @@
                             <td>
                                 <button class="btn btn-danger">Delete</button>
                             </td>
-                        {% endfor %}
-                    </tr>
+                        </tr>
+                        <tr id="{{key}}Destinations" class="collapse">
+                            <td>{{value}}</td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
