@@ -13,13 +13,14 @@ from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
 from forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 from config import Config 
+from database import Database
 
 # start flask app
 app = Flask(__name__)
 
 # set up database info and secret key 
 app.config.from_object(Config)
-db = MySQL(app)
+db = Database(app)
 
 #### dummy data: take out when database is working ####
 trips = [
@@ -46,6 +47,12 @@ allActivities = [
         [{'Ice Festival': 'Sightseeing'}, {'Harbin Brewery Tour': 'Sightseeing'}]
     }
 ]
+
+# db test route 
+@app.route('/test')
+def test():
+    result = db.runQuery("SELECT * FROM diagnostic")
+    return render_template("index.html", result=result)
 
 
 # index route
