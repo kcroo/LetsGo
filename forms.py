@@ -27,6 +27,12 @@ class AddDestination(FlaskForm):
     leaveDate = DateField('Leave Date')
     submit = SubmitField('Add Destination')
 
+class AddActivity(FlaskForm):
+    activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)])
+    activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0)])
+    activityType = SelectField('Activity Type', choices=[])
+    submit = SubmitField('Add Activity')
+
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     submit = SubmitField('Create New User')

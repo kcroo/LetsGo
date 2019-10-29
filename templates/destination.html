@@ -33,5 +33,27 @@
                 {% endif %}
             </tbody>
         </table>
-</div>
+
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>Add New Activity</legend>
+                <div class="form-group required">
+                    {{ form.activityName.label(class="form-control-label") }}
+                    {{ form.activityName(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.activityCost.label(class="form-control-label") }}
+                    {{ form.activityCost(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.activityType.label(class="form-control-label") }}
+                    {{ form.activityType(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="form-control") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
 {% endblock %}
