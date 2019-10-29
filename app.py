@@ -51,7 +51,7 @@ allActivities = [
 # index route
 @app.route('/')
 def index():
-    return render_template("index.html", title="", result="Amazing trip planner!!")
+    return render_template("index.html", title="")
 
 # shows all trips
 @app.route('/mytrips')
