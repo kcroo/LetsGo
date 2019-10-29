@@ -12,7 +12,7 @@
             <thead>
                 <tr>
                     <th>Trip Name</th>
-                    <th>Edit</th>
+                    <th>View/Edit</th>
                     <th>Delete</th>
                 </tr> 
             </thead>
@@ -24,7 +24,7 @@
                                 {{ key }}
                             </td>
                             <td>
-                                <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">Edit</a>
+                                <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">View/Edit</a>
                             </td>
                             <td>
                                 <button class="btn btn-danger">Delete</button>
@@ -42,7 +42,7 @@
         <table class="table">
             <thead>
                 <th>Destination Name</th>
-                <th>Edit</th>
+                <th>View/Edit</th>
                 <th>Delete</th>
             </thead>
             <tbody>
@@ -52,7 +52,7 @@
                             {{ d }}
                         </td>
                         <td>
-                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">Edit</a>
+                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">View/Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>
