@@ -51,7 +51,7 @@ allActivities = [
 # db test route 
 @app.route('/test')
 def test():
-    result = db.runQuery("SELECT * FROM diagnostic")
+    result = db.runQuery("SELECT * FROM users")
     return render_template("index.html", result=result)
 
 
