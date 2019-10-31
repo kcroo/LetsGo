@@ -1,6 +1,11 @@
--- user table --
+-- drop all tables
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS trip;
 
+SET FOREIGN_KEY_CHECKS=1;
+
+-- user table --
 CREATE TABLE user (
     id INT AUTO_INCREMENT,
     username VARCHAR(20) NOT NULL,
@@ -12,9 +17,8 @@ INSERT INTO user (username) VALUES('Frodo');
 INSERT INTO user (username) VALUES('Meriadoc');
 INSERT INTO user (username) VALUES('Pippin');
 
--- trip table --
-DROP TABLE IF EXISTS trip;
 
+-- trip table --
 CREATE TABLE trip (
     id INT AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
