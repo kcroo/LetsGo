@@ -23,11 +23,11 @@ app.config.from_object(Config)
 db = Database(app)
 
 #### dummy data: take out when database is working ####
-trips = [
-    {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
-    {'China': ['Beijing', 'Harbin']},
-    {'Oregon Coast': ['Florence', 'Newport']}
-]
+# trips = [
+#     {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
+#     {'China': ['Beijing', 'Harbin']},
+#     {'Oregon Coast': ['Florence', 'Newport']}
+# ]
 
 allActivities = [
     {
@@ -51,7 +51,7 @@ allActivities = [
 # db test route 
 @app.route('/test')
 def test():
-    result = db.runQuery("SELECT * FROM users")
+    result = db.runQuery("SELECT * from trip")
     return render_template("index.html", result=result)
 
 
@@ -63,6 +63,8 @@ def index():
 # shows all trips
 @app.route('/mytrips')
 def myTrips():
+    trips = db.runQuery("SELECT * FROM trip")
+
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # shows individual trip
