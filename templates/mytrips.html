@@ -41,7 +41,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=trip[1]) }}">View/Edit</a>
+                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripId=trip[0]) }}">View/Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>
@@ -58,6 +58,8 @@
         <table class="table">
             <thead>
                 <th>Destination Name</th>
+                <th>Arrival Date</th>
+                <th>Departure Date</th>
                 <th>View/Edit</th>
                 <th>Delete</th>
             </thead>
@@ -65,7 +67,17 @@
                 {% for d in destinations %}
                     <tr>
                         <td>
-                            {{ d }}
+                            {{ d[1] }}
+                        </td>
+                        <td>
+                            {% if d[3] %}
+                                {{ d[3] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if d[4] %}
+                                {{ d[4] }}
+                            {% endif %}
                         </td>
                         <td>
                             <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">View/Edit</a>

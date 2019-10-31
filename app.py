@@ -43,10 +43,12 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # shows individual trip
-@app.route('/trip/<tripName>', methods=['GET', 'POST'])
-def showTrip(tripName):
-    query = "SELECT * FROM destination WHERE name = '" + tripName + "'"
+@app.route('/trip/<tripId>', methods=['GET', 'POST'])
+def showTrip(tripId):
+    query = "SELECT * FROM destination WHERE tripId = '" + tripId + "'"
     destinations = db.runQuery(query) 
+    query = "SELECT name FROM trip WHERE id = '" + tripId + "'"
+    tripName = db.runQuery(query)[0][0]
 
     form = AddDestination()
     return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)
