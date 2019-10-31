@@ -22,31 +22,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = Database(app)
 
-#### dummy data: take out when database is working ####
-# trips = [
-#     {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
-#     {'China': ['Beijing', 'Harbin']},
-#     {'Oregon Coast': ['Florence', 'Newport']}
-# ]
-
-allActivities = [
-    {
-        'Mt Bachelor':
-        [{'Phil\'s Trailhead': 'Mountain biking'}, {'South Sister Summit': 'Hiking'}]
-    },
-    {
-        'Devil\'s Lake':
-        [{'South Sister Summit': 'Hiking'}, {'Trout Fishing': 'Fishing'}]
-    },
-    {
-        'Beijing':
-        [{'Forbidden Palace': 'Sightseeing'}, {'Great Wall': 'Sightseeing'}]
-    },
-    {
-        'Harbin':
-        [{'Ice Festival': 'Sightseeing'}, {'Harbin Brewery Tour': 'Sightseeing'}]
-    }
-]
 
 # db test route 
 @app.route('/test')
@@ -70,12 +45,8 @@ def myTrips():
 # shows individual trip
 @app.route('/trip/<tripName>', methods=['GET', 'POST'])
 def showTrip(tripName):
-    ### fill destinations with db results later
-    destinations = None 
-    for trip in trips: 
-        for key, values in trip.items():
-            if key == tripName: 
-                destinations = values
+    query = "SELECT * FROM destination WHERE name = '" + tripName + "'"
+    destinations = db.runQuery(query) 
 
     form = AddDestination()
     return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)

@@ -1,7 +1,9 @@
 -- drop all tables
 SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS trip;
+DROP TABLE IF EXISTS destination;
 
 SET FOREIGN_KEY_CHECKS=1;
 
@@ -38,3 +40,26 @@ INSERT INTO trip (name, userId, numberOfPeople)
     VALUES('China', 2, 1);
 INSERT INTO trip (name, userId) 
     VALUES('Oregon Coast', 3);
+
+
+-- destination table --
+CREATE TABLE destination (
+    id INT AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    tripId INT NOT NULL,
+    arriveDate DATE,
+    leaveDate DATE,
+    PRIMARY KEY(id),
+    FOREIGN KEY fkTrip(tripId)
+        REFERENCES trip(id)
+        ON DELETE CASCADE
+);
+
+INSERT INTO destination (name, tripId, arriveDate, leaveDate)
+    VALUES('Mt Bachelor', 1, '2020-08-10', '2020-08-12');
+INSERT INTO destination (name, tripId, arriveDate, leaveDate)
+    VALUES("Devil's Lake", 1, '2020-08-12', '2020-08-15');
+INSERT INTO destination (name, tripId) VALUES('Beijing', 2);
+INSERT INTO destination (name, tripId) VALUES('Harbin', 2);
+INSERT INTO destination (name, tripId) VALUES('Tillamook', 3);
+INSERT INTO destination (name, tripId) VALUES('Oregon Dunes NRA', 3);
