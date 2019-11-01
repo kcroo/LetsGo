@@ -80,7 +80,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">View/Edit</a>
+                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripId=tripId, destId=d[0]) }}">View/Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>
