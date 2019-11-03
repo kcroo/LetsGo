@@ -15,7 +15,8 @@
                     <th>Number of People</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>View/Edit</th>
+                    <th>View</th>
+                    <th>Edit</th> 
                     <th>Delete</th>
                 </tr> 
             </thead>
@@ -41,7 +42,10 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripId=trip[0]) }}">View/Edit</a>
+                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripId=trip[0]) }}">View</a>
+                        </td>
+                        <td>
+                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripId=trip[0]) }}">Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>
@@ -60,7 +64,8 @@
                 <th>Destination Name</th>
                 <th>Arrival Date</th>
                 <th>Departure Date</th>
-                <th>View/Edit</th>
+                <th>View</th>
+                <th>Edit</th>
                 <th>Delete</th>
             </thead>
             <tbody>
