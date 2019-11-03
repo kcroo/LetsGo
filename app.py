@@ -13,39 +13,21 @@ from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
 from forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 from config import Config 
+from database import Database
 
 # start flask app
 app = Flask(__name__)
 
 # set up database info and secret key 
 app.config.from_object(Config)
-db = MySQL(app)
+db = Database(app)
 
-#### dummy data: take out when database is working ####
-trips = [
-    {'Cascade Lakes': ['Mt Bachelor', 'Devil\'s Lake']},
-    {'China': ['Beijing', 'Harbin']},
-    {'Oregon Coast': ['Florence', 'Newport']}
-]
 
-allActivities = [
-    {
-        'Mt Bachelor':
-        [{'Phil\'s Trailhead': 'Mountain biking'}, {'South Sister Summit': 'Hiking'}]
-    },
-    {
-        'Devil\'s Lake':
-        [{'South Sister Summit': 'Hiking'}, {'Trout Fishing': 'Fishing'}]
-    },
-    {
-        'Beijing':
-        [{'Forbidden Palace': 'Sightseeing'}, {'Great Wall': 'Sightseeing'}]
-    },
-    {
-        'Harbin':
-        [{'Ice Festival': 'Sightseeing'}, {'Harbin Brewery Tour': 'Sightseeing'}]
-    }
-]
+# db test route 
+@app.route('/test')
+def test():
+    result = db.runQuery("SELECT * from trip")
+    return render_template("index.html", result=result)
 
 
 # index route
@@ -56,34 +38,38 @@ def index():
 # shows all trips
 @app.route('/mytrips')
 def myTrips():
+    trips = db.runQuery("SELECT * FROM trip")
+
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # shows individual trip
-@app.route('/trip/<tripName>', methods=['GET', 'POST'])
-def showTrip(tripName):
-    ### fill destinations with db results later
-    destinations = None 
-    for trip in trips: 
-        for key, values in trip.items():
-            if key == tripName: 
-                destinations = values
+@app.route('/trip/<tripId>', methods=['GET', 'POST'])
+def showTrip(tripId):
+    query = "SELECT * FROM destination WHERE tripId = '" + tripId + "'"
+    destinations = db.runQuery(query) 
+    query = "SELECT name FROM trip WHERE id = '" + tripId + "'"
+    tripName = db.runQuery(query)[0][0]
 
     form = AddDestination()
-    return render_template("mytrips.html", title="- My Trips", tripName=tripName, destinations=destinations, form=form)
+    return render_template("mytrips.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form)
 
 # shows individual destination and its activities
-@app.route('/trip/<tripName>/<destName>', methods=['GET', 'POST'])
-def showDestination(tripName, destName):
-    ### fill with db results later
-    activities = None 
-    for a in allActivities:
-        for key, values in a.items(): 
-            if key == destName: 
-                    activities = values 
+@app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
+def showDestination(tripId, destId):
+    query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
+    activities = db.runQuery(query)
 
-    choices = [(0, ''), (1, 'Sightseeing'), (2, 'Dining'), (3, 'Hiking'), (4, 'Backpacking'), (5, 'Cycling'), (6, 'Mountain Biking')]
+    query = "SELECT name FROM activityType"
+    choices = db.runQuery(query)[0]
+
+    query = "SELECT name FROM trip WHERE id = " + tripId
+    tripName = db.runQuery(query)[0][0]
+
+    query = "SELECT name FROM destination WHERE id = " + destId
+    destName = db.runQuery(query)[0][0]
+
     form = AddActivity()
-    form.activityType.choices = choices
+    #form.activityType.choices = choices
     
     return render_template("destination.html", title="- ", tripName=tripName, destName=destName, activities=activities, form=form)
 

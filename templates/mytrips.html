@@ -5,13 +5,16 @@
 
 {% block body %}
 <div class="container">
-    <!-- lists trip names, with edit/delte buttons -->
+    <!-- lists trip names, with edit/delete buttons -->
     {% if trips %}
         <h1>My Trips</h1>
         <table class="table">
             <thead>
                 <tr>
                     <th>Trip Name</th>
+                    <th>Number of People</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                     <th>View/Edit</th>
                     <th>Delete</th>
                 </tr> 
@@ -19,17 +22,30 @@
             <tbody>
                 {% for trip in trips %}
                     <tr>
-                        {% for key, value in trip.items() %}
-                            <td>
-                                {{ key }}
-                            </td>
-                            <td>
-                                <a class= "btn btn-warning" href="{{ url_for('showTrip', tripName=key) }}">View/Edit</a>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger">Delete</button>
-                            </td>
-                        {% endfor %}
+                        <td>
+                            {{ trip[1] }}
+                        </td>
+                        <td>
+                            {% if trip[3] %}
+                                {{ trip[3] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if trip[4] %}
+                                {{ trip[4] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if trip[5] %}
+                                {{ trip[5] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class= "btn btn-warning" href="{{ url_for('showTrip', tripId=trip[0]) }}">View/Edit</a>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -42,6 +58,8 @@
         <table class="table">
             <thead>
                 <th>Destination Name</th>
+                <th>Arrival Date</th>
+                <th>Departure Date</th>
                 <th>View/Edit</th>
                 <th>Delete</th>
             </thead>
@@ -49,10 +67,20 @@
                 {% for d in destinations %}
                     <tr>
                         <td>
-                            {{ d }}
+                            {{ d[1] }}
                         </td>
                         <td>
-                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripName=tripName, destName=d) }}">View/Edit</a>
+                            {% if d[3] %}
+                                {{ d[3] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if d[4] %}
+                                {{ d[4] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class= "btn btn-warning" href="{{ url_for('showDestination', tripId=tripId, destId=d[0]) }}">View/Edit</a>
                         </td>
                         <td>
                             <button class="btn btn-danger">Delete</button>
