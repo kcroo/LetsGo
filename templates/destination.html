@@ -9,8 +9,8 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showTrip', tripId=tripId) }}">{{ destName }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Activities</li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showTrip', tripId=tripId) }}">{{ tripName }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ destName }}</li>
             </ol>
         </nav>
         <h1>{{ tripName }} - {{ destName }} - Activities</h1>
