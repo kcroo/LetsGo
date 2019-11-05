@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 
+{% block head %}
+{% endblock %}
+
 {% block body %}
     <div class="container">
+        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="">Destinations</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Activities</li>
+            </ol>
+        </nav>
         <h1>{{ tripName }} - {{ destName }} - Activities</h1>
         <table class="table">
             <thead>
