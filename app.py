@@ -71,7 +71,7 @@ def showDestination(tripId, destId):
     form = AddActivity()
     #form.activityType.choices = choices
     
-    return render_template("destination.html", title="- ", tripName=tripName, destName=destName, activities=activities, form=form)
+    return render_template("destination.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
