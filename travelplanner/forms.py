@@ -8,8 +8,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError
 from datetime import date, timedelta
+
+from travelplanner import db
 
 class NewTrip(FlaskForm):
     tomorrow = date.today() + timedelta(days=1)
@@ -32,10 +34,17 @@ class AddActivity(FlaskForm):
     activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0)])
     activityType = SelectField('Activity Type', choices=[])
     submit = SubmitField('Add Activity')
-
+ 
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     submit = SubmitField('Create New User')
+
+    # validation functions MUST begin with validate_ to run 
+    def validate_username(self, username):
+        query = "SELECT id FROM user WHERE username = '" + username.data + "'" 
+        result = db.runQuery(query)
+        if result:
+            raise ValidationError('Username already exists. Please choose another.')
 
 class SwitchUser(FlaskForm):
     user = SelectField('Users', choices=[], validators=[DataRequired()])

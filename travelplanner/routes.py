@@ -9,18 +9,10 @@
 #   URL converter: https://exploreflask.com/en/latest/views.html
 ##############################################################################
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import flash, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
-from forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
-from config import Config 
-from database import Database
-
-# start flask app
-app = Flask(__name__)
-
-# set up database info and secret key 
-app.config.from_object(Config)
-db = Database(app)
+from travelplanner import app, db
+from .forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 
 
 # db test route 
