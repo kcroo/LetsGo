@@ -3,12 +3,13 @@
 # https://www.youtube.com/watch?v=UIJKdCIEXUQ&t
 # DateField: https://stackoverflow.com/questions/26057710/datepickerwidget-with-flask-flask-admin-and-wtforms
 # Default values: https://stackoverflow.com/questions/21314068/wtforms-field-defaults-suddenly-dont-work
+# coerce-int: https://stackoverflow.com/questions/13964152/not-a-valid-choice-for-dynamic-select-field-wtforms
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, NumberRange, ValidationError
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf
 from datetime import date, timedelta
 
 from travelplanner import db
@@ -47,5 +48,5 @@ class NewUser(FlaskForm):
             raise ValidationError('Username already exists. Please choose another.')
 
 class SwitchUser(FlaskForm):
-    user = SelectField('Users', choices=[], validators=[DataRequired()])
+    user = SelectField('Users', choices=[], validators=[DataRequired()], coerce=int)
     submit = SubmitField('Switch User')

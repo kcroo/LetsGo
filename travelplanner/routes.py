@@ -14,6 +14,8 @@ from flask_mysqldb import MySQL
 from travelplanner import app, db
 from .forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 
+### replace with user login later ### 
+currentUserId = 1
 
 # db test route 
 @app.route('/test')
@@ -30,7 +32,8 @@ def index():
 # shows all trips
 @app.route('/mytrips')
 def myTrips():
-    trips = db.runQuery("SELECT * FROM trip")
+    query = "SELECT * FROM trip WHERE id = " + str(currentUserId)
+    trips = db.runQuery(query)
 
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
@@ -86,8 +89,14 @@ def newUser():
 # switch user 
 @app.route('/switchuser', methods=['GET', 'POST'])
 def switchUser():
-    query = "SELECT id, username FROM user"
+    global currentUserId
+    query = "SELECT id, username FROM user WHERE NOT id = " + str(currentUserId)
     users = db.runQuery(query)
     form = SwitchUser()
     form.user.choices = users
+
+    if form.validate_on_submit():
+        currentUserId = form.user.data
+        return redirect(url_for('index'))
+
     return render_template("switchuser.html", title="- Switch User", form=form)
