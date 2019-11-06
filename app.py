@@ -94,8 +94,8 @@ def newUser():
 # switch user 
 @app.route('/switchuser', methods=['GET', 'POST'])
 def switchUser():
-    # tuple: what will be returned (i.e. userId), then what will be displayed in form (i.e. username) 
-    users = [(1, 'Frodo'), (2, 'Sam'), (3, 'Merry'), (4, 'Pippin')]
+    query = "SELECT id, username FROM user"
+    users = db.runQuery(query)
     form = SwitchUser()
     form.user.choices = users
     return render_template("switchuser.html", title="- Switch User", form=form)
