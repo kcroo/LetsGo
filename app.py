@@ -9,7 +9,7 @@
 #   URL converter: https://exploreflask.com/en/latest/views.html
 ##############################################################################
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 from forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 from config import Config 
@@ -83,6 +83,12 @@ def newTrip():
 @app.route('/newuser', methods=['GET', 'POST'])
 def newUser():
     form = NewUser()
+
+    if form.validate_on_submit():
+        query = "INSERT INTO user(username) VALUES('" + form.username.data + "')"
+        db.runQuery(query)
+        return redirect(url_for('index'))
+
     return render_template("newuser.html", title=" - New User", form=form)
 
 # switch user 
