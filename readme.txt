@@ -32,7 +32,7 @@ RESET DATABASE (with dummy data)
 - log in to mysql
 mysql -u cs340_corraok -p -h classmysql.engr.oregonstate.edu cs340_corraok
 
-- source static/databaseSetup.sql
+- source travelplanner/static/databaseSetup.sql
 
 
 POSSIBLE ISSUES 
