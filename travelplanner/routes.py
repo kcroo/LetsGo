@@ -4,9 +4,11 @@
 # Class: CS340
 # Sources:
 #   https://github.com/knightsamar/CS340_starter_flask_app
+#   Best Flask CRUD app tutorial: https://github.com/CoreyMSchafer/code_snippets/blob/master/Python/Flask_Blog/
 #   https://www.youtube.com/watch?v=Z1RJmh_OqeA
 #   https://flask.palletsprojects.com/en/1.0.x/
 #   URL converter: https://exploreflask.com/en/latest/views.html
+#   changing text in submit button: https://stackoverflow.com/questions/32107545/update-text-of-submit-button-in-wtforms
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
@@ -36,6 +38,32 @@ def myTrips():
     trips = db.runQuery(query)
 
     return render_template("mytrips.html", title="- My Trips", trips=trips)
+
+# edit trip
+@app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
+def editTrip(tripId):
+    form = NewTrip()
+
+    if request.method == 'GET':
+        query = "SELECT name, userId, numberOfPeople, startDate, endDate FROM trip WHERE id = " + str(tripId)
+        result = db.runQuery(query)
+
+        if result[0][1] != currentUserId:
+            return redirect(url_for('index'))
+
+        form.tripName.data = result[0][0]
+        form.numberOfPeople.data = result[0][2]
+        form.startDate.data = result[0][3]
+        form.endDate.data = result[0][4]
+        form.submit.label.text = 'Edit Trip'
+        
+        return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form)
+
+    elif form.validate_on_submit():
+        query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
+        params = [form.tripName.data, form.numberOfPeople.data, form.startDate.data, form.endDate.data]
+        db.runQuery(query, params=params)
+        return redirect(url_for('myTrips'))
 
 # shows individual trip
 @app.route('/trip/<tripId>', methods=['GET', 'POST'])
@@ -72,7 +100,7 @@ def showDestination(tripId, destId):
 @app.route('/newtrip', methods=['GET', 'POST'])
 def newTrip():
     form = NewTrip()
-    return render_template("newtrip.html", title="- New Trip", form=form)
+    return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form)
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
