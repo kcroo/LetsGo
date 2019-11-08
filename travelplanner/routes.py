@@ -9,6 +9,9 @@
 #   https://flask.palletsprojects.com/en/1.0.x/
 #   URL converter: https://exploreflask.com/en/latest/views.html
 #   changing text in submit button: https://stackoverflow.com/questions/32107545/update-text-of-submit-button-in-wtforms
+#   how to print form errors: https://stackoverflow.com/questions/10722968/flask-wtf-validate-on-submit-is-never-executed
+#   jinja control structures: https://jinja.palletsprojects.com/en/2.10.x/templates/
+#   bootstrap modals: https://getbootstrap.com/docs/4.0/components/modal/
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
