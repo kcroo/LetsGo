@@ -52,9 +52,12 @@ def editTrip(tripId):
             return redirect(url_for('index'))
 
         form.tripName.data = result[0][0]
-        form.numberOfPeople.data = result[0][2]
-        form.startDate.data = result[0][3]
-        form.endDate.data = result[0][4]
+        if result[0][2]:
+            form.numberOfPeople.data = result[0][2]
+        if result[0][3]:
+            form.startDate.data = result[0][3]
+        if result[0][4]:
+            form.endDate.data = result[0][4]
         form.submit.label.text = 'Edit Trip'
         
         return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form)
@@ -63,7 +66,15 @@ def editTrip(tripId):
         query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
         params = [form.tripName.data, form.numberOfPeople.data, form.startDate.data, form.endDate.data]
         db.runQuery(query, params=params)
-        return redirect(url_for('myTrips'))
+
+    return redirect(url_for('myTrips'))
+
+# delete trip 
+@app.route('/mytrips/<tripId>/delete', methods=['POST'])
+def deleteTrip(tripId):
+    query = "DELETE FROM trip WHERE id = " + str(tripId)
+    db.runQuery(query)
+    return redirect(url_for('myTrips'))
 
 # shows individual trip
 @app.route('/trip/<tripId>', methods=['GET', 'POST'])
