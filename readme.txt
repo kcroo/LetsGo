@@ -15,7 +15,7 @@ RUN SERVER ON FLIP (WITH DEBUG)
 - do this if you're not in virtual environment 
 bash 
 source ./venv/bin/activate
-export FLASK_APP=app.py
+export FLASK_APP=run.py
 export FLASK_DEBUG=1						
 python -m flask run -h 0.0.0.0 -p 5473	
 
@@ -32,7 +32,7 @@ RESET DATABASE (with dummy data)
 - log in to mysql
 mysql -u cs340_corraok -p -h classmysql.engr.oregonstate.edu cs340_corraok
 
-- source static/databaseSetup.sql
+- source travelplanner/static/databaseSetup.sql
 
 
 POSSIBLE ISSUES 

@@ -8,7 +8,7 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <fieldset>
-            <legend>Add New Trip</legend>
+            <legend>{{ legend }}</legend>
             <div class="form-group required">
                 {{ form.tripName.label(class="form-control-label") }}
                 {{ form.tripName(class="form-control") }}
