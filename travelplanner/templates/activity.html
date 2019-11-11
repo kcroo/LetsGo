@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <!-- lists activities, with edit/delete buttons and add activities form -->
+        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showTrip', tripId=tripId) }}">{{ tripName }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ destName }}</li>
+            </ol>
+        </nav>
+        <h1>{{ tripName }} - {{ destName }} - Activities</h1>
+        <table class="table">
+            <thead>
+                <th>Activity Name</th>
+                <th>Activity Type</th>
+                <th>Cost</th>
+                <th>Notes</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+                {% if activities %}
+                    {% for act in activities %}
+                        <tr>
+                            <td>
+                                {{ act[0] }}
+                            </td>
+                            <td>
+                                {{ act[1] }}
+                            </td>
+                            <td>
+                                {{ act[2] }}
+                            </td>
+                            <td>
+                                {{ act[3] }}
+                            </td>
+                            <td>
+                                <a class= "btn btn-warning" href="#">Edit</a>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>Add New Activity</legend>
+                <div class="form-group required">
+                    {{ form.activityName.label(class="form-control-label") }}
+                    {{ form.activityName(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.activityCost.label(class="form-control-label") }}
+                    {{ form.activityCost(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.activityType.label(class="form-control-label") }}
+                    {{ form.activityType(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="form-control") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}
