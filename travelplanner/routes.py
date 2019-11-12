@@ -79,7 +79,7 @@ def deleteTrip(tripId):
     db.runQuery(query)
     return redirect(url_for('myTrips'))
 
-# shows individual trip
+# shows individual trip --> show destination(s) for the trip
 @app.route('/trip/<tripId>', methods=['GET', 'POST'])
 def showTrip(tripId):
     query = "SELECT * FROM destination WHERE tripId = '" + tripId + "'"
@@ -88,7 +88,7 @@ def showTrip(tripId):
     tripName = db.runQuery(query)[0][0]
 
     form = AddDestination()
-    return render_template("mytrips.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form)
+    return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form)
 
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
@@ -108,7 +108,7 @@ def showDestination(tripId, destId):
     form = AddActivity()
     #form.activityType.choices = choices
     
-    return render_template("destination.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
+    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
