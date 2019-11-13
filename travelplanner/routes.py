@@ -30,9 +30,25 @@ def test():
 
 
 # index route
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html", title="")
+    return render_template("index.html", title="") 
+
+@app.route('/search', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        text = request.form['search']
+
+        if text == '':
+            return redirect(url_for('index')) 
+
+        query = "SELECT name FROM trip WHERE name LIKE '%" + text + "%'" 
+        trips = db.runQuery(query)
+        print(trips)
+
+        return render_template("search.html", title="Search", trips=trips) 
+
+    return redirect(url_for('index'))
 
 # shows all trips
 @app.route('/mytrips')

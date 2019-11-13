@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    {% if trips %}
+        <h1>Trips</h1>
+        {% for trip in trips %}
+            {{ trip[0] }}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
