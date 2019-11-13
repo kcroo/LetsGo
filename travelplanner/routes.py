@@ -42,7 +42,7 @@ def search():
         if text == '':
             return redirect(url_for('index')) 
 
-        query = "SELECT name FROM trip WHERE name LIKE '%" + text + "%'" 
+        query = "SELECT name FROM trip WHERE userId = " + str(currentUserId) + " AND name LIKE '%" + text + "%'" 
         trips = db.runQuery(query)
         print(trips)
 
