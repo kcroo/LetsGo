@@ -46,17 +46,15 @@ def search():
         strCurrentUserId = str(currentUserId)
         likeText = '%' + text + '%'
 
-        #query = "SELECT name FROM trip WHERE userId = " + str(currentUserId) + " AND name LIKE '%" + text + "%'" 
-        query = "SELECT name FROM trip WHERE userId = %s AND name LIKE %s"
+        query = "SELECT id, name FROM trip WHERE userId = %s AND name LIKE %s"
         params = (strCurrentUserId, likeText)
-        print(query)
         trips = db.runQuery(query, params=params)
         
-        query = "SELECT d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
+        query = "SELECT t.id, d.id, d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
         params = (strCurrentUserId, likeText)
         destinations = db.runQuery(query, params=params)
 
-        query = """SELECT DISTINCT a.name FROM activity a 
+        query = """SELECT DISTINCT t.id, d.id, a.name FROM activity a 
                     INNER JOIN activityType at ON a.typeId = at.id
                     INNER JOIN destinationActivity da ON a.id = da.activityId
                     INNER JOIN destination d ON da.destinationId = d.id 
@@ -64,10 +62,7 @@ def search():
                     WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
                     """
         params = (strCurrentUserId, likeText, likeText, likeText)
-
         activities = db.runQuery(query, params=params)
-        for a in activities:
-            print(a)
 
         return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
 

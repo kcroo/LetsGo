@@ -4,26 +4,74 @@
     <div class="container">
         {% if (trips or destinations or activities)%}
             <h1>Results</h1>
-            {% if trips %}
-                <h3>Trips</h3>
-                {% for trip in trips %}
-                    {{ trip[0] }}
-                {% endfor %}
-            {% endif %}
+            <table class="table">
+                <thead>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </thead>
+                <tbody>
+                    {% if trips %}
+                        {% for trip in trips %}
+                            <tr>
+                                <td>Trip</td>
+                                <td>{{ trip[1] }}</td>
+                                <td><a class= "btn btn-info" href="{{ url_for('showTrip', tripId=trip[0]) }}">View</a></td>
+                                <td><a class= "btn btn-warning" href="{{ url_for('editTrip', tripId=trip[0]) }}">Edit</a></td>
+                                <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button></td>
+                            </tr>
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModelLabel">Confirm Delete</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete this trip?
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form action="{{ url_for('deleteTrip', tripId=trip[0]) }}" method="post">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-            {% if destinations %}
-                <h3>Destinations</h3>
-                {% for dest in destinations %}
-                    {{ dest[0] }}
-                {% endfor %}
-            {% endif %}
+                    {% if destinations %}
+                        {% for dest in destinations %}
+                            <tr>
+                                <td>Destination</td>
+                                <td>{{ dest[2] }}</td>
+                                <td>View</td>
+                                <td>Edit</td>
+                                <td>Delete</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
 
-            {% if activities %}
-                <h3>Activities</h3>
-                {% for act in activities %}
-                    {{ act[0] }}
-                {% endfor %}
-            {% endif %}
+                    {% if activities %}
+                        {% for act in activities %}
+                            <tr>
+                                <td>Activity</td>
+                                <td>{{ act[2] }}</td>
+                                <td>View</td>
+                                <td>Edit</td>
+                                <td>Delete</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
 
         {% else %}
             <h1>No results found</h1>
