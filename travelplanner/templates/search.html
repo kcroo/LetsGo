@@ -8,9 +8,6 @@
                 <thead>
                     <th>Type</th>
                     <th>Name</th>
-                    {% if activities %}
-                        <th>Destination</th>
-                    {% endif %}
                     <th>View</th>
                 </thead>
                 <tbody>
@@ -37,8 +34,7 @@
                         {% for act in activities %}
                             <tr>
                                 <td>Activity</td>
-                                <td>{{ act[3] }}</td>
-                                <td>{{ act[2] }}</td>
+                                <td>{{ act[3] }} ({{ act[2] }})</td>
                                 <td><a class= "btn btn-info" href="{{ url_for('showDestination', tripId=act[0], destId=act[1]) }}">View</a></td>
                             </tr>
                         {% endfor %}
