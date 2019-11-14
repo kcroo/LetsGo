@@ -17,7 +17,7 @@ bash
 source ./venv/bin/activate
 export FLASK_APP=run.py
 export FLASK_DEBUG=1						
-python -m flask run -h 0.0.0.0 -p 5473	
+python -m flask run -h 0.0.0.0 -p 5473
 
 - run server persistently (replace #### with port number)
 gunicorn run:app -b 0.0.0.0:#### -D
