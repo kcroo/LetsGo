@@ -54,7 +54,7 @@ def search():
         params = (strCurrentUserId, likeText)
         destinations = db.runQuery(query, params=params)
 
-        query = """SELECT DISTINCT t.id, d.id, a.name FROM activity a 
+        query = """SELECT t.id, d.id, d.name, a.name FROM activity a 
                     INNER JOIN activityType at ON a.typeId = at.id
                     INNER JOIN destinationActivity da ON a.id = da.activityId
                     INNER JOIN destination d ON da.destinationId = d.id 
