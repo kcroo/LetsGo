@@ -1,24 +1,26 @@
 {% extends "base.html" %}
 
 {% block body %}
-    {% if (trips or destinations)%}
-        <h1>Results</h1>
-        {% if trips %}
-            <h3>Trips</h3>
-            {% for trip in trips %}
-                {{ trip[0] }}
-            {% endfor %}
-        {% endif %}
+    <div class="container">
+        {% if (trips or destinations)%}
+            <h1>Results</h1>
+            {% if trips %}
+                <h3>Trips</h3>
+                {% for trip in trips %}
+                    {{ trip[0] }}
+                {% endfor %}
+            {% endif %}
 
-        {% if destinations %}
-            <h3>Destinations</h3>
-            {% for dest in destinations %}
-                {{ dest[0] }}
-            {% endfor %}
-        {% endif %}
+            {% if destinations %}
+                <h3>Destinations</h3>
+                {% for dest in destinations %}
+                    {{ dest[0] }}
+                {% endfor %}
+            {% endif %}
 
-    {% else %}
-        <h1>No results found</h1>
-    {% endif %}
+        {% else %}
+            <h1>No results found</h1>
+        {% endif %}
+    </div>
     
 {% endblock %}
