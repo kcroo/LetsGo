@@ -12,6 +12,7 @@
 #   how to print form errors: https://stackoverflow.com/questions/10722968/flask-wtf-validate-on-submit-is-never-executed
 #   jinja control structures: https://jinja.palletsprojects.com/en/2.10.x/templates/
 #   bootstrap modals: https://getbootstrap.com/docs/4.0/components/modal/
+#   sql wildcards and LIKE: https://stackoverflow.com/questions/3134691/python-string-formats-with-sql-wildcards-and-like
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
@@ -42,19 +43,31 @@ def search():
         if text == '':
             return redirect(url_for('index')) 
 
-        query = "SELECT name FROM trip WHERE userId = " + str(currentUserId) + " AND name LIKE '%" + text + "%'" 
-        trips = db.runQuery(query)
-        
-        query = "SELECT d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = " + str(currentUserId) + " AND d.name LIKE '%" + text + "%'"
-        destinations = db.runQuery(query)
+        strCurrentUserId = str(currentUserId)
+        likeText = '%' + text + '%'
 
-        query = '''SELECT a.name FROM activity a 
+        #query = "SELECT name FROM trip WHERE userId = " + str(currentUserId) + " AND name LIKE '%" + text + "%'" 
+        query = "SELECT name FROM trip WHERE userId = %s AND name LIKE %s"
+        params = (strCurrentUserId, likeText)
+        print(query)
+        trips = db.runQuery(query, params=params)
+        
+        query = "SELECT d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
+        params = (strCurrentUserId, likeText)
+        destinations = db.runQuery(query, params=params)
+
+        query = """SELECT DISTINCT a.name FROM activity a 
                     INNER JOIN activityType at ON a.typeId = at.id
                     INNER JOIN destinationActivity da ON a.id = da.activityId
                     INNER JOIN destination d ON da.destinationId = d.id 
                     INNER JOIN trip t ON d.tripId = t.id
-                    WHERE t.userId = ''' + str(currentUserId) + " AND (a.name LIKE '%" + text + "%' OR a.notes LIKE '%" + text + "%' OR at.name LIKE '%" + text + "%')"
-        activities = db.runQuery(query)
+                    WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
+                    """
+        params = (strCurrentUserId, likeText, likeText, likeText)
+
+        activities = db.runQuery(query, params=params)
+        for a in activities:
+            print(a)
 
         return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
 
