@@ -43,26 +43,46 @@ def search():
         if text == '':
             return redirect(url_for('index')) 
 
+        # search for each word in text (separated by space)
+        words = text.split()
+
         strCurrentUserId = str(currentUserId)
-        likeText = '%' + text + '%'
+        trips = []
+        destinations = []
+        activities = []
 
-        query = "SELECT id, name FROM trip WHERE userId = %s AND name LIKE %s"
-        params = (strCurrentUserId, likeText)
-        trips = db.runQuery(query, params=params)
-        
-        query = "SELECT t.id, d.id, d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
-        params = (strCurrentUserId, likeText)
-        destinations = db.runQuery(query, params=params)
+        for word in words:
+            likeText = '%' + word + '%'
 
-        query = """SELECT t.id, d.id, d.name, a.name FROM activity a 
-                    INNER JOIN activityType at ON a.typeId = at.id
-                    INNER JOIN destinationActivity da ON a.id = da.activityId
-                    INNER JOIN destination d ON da.destinationId = d.id 
-                    INNER JOIN trip t ON d.tripId = t.id
-                    WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
-                    """
-        params = (strCurrentUserId, likeText, likeText, likeText)
-        activities = db.runQuery(query, params=params)
+            # get matching trips
+            query = "SELECT id, name FROM trip WHERE userId = %s AND name LIKE %s"
+            params = (strCurrentUserId, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                trips.append(r)
+            
+            # get matching destinations
+            query = "SELECT t.id, d.id, d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
+            params = (strCurrentUserId, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                destinations.append(r)
+
+            # get matching activities
+            query = """SELECT t.id, d.id, d.name, a.name FROM activity a 
+                        INNER JOIN activityType at ON a.typeId = at.id
+                        INNER JOIN destinationActivity da ON a.id = da.activityId
+                        INNER JOIN destination d ON da.destinationId = d.id 
+                        INNER JOIN trip t ON d.tripId = t.id
+                        WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
+                        """
+            params = (strCurrentUserId, likeText, likeText, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                activities.append(r)
 
         return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
 
