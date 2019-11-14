@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        {% if (trips or destinations)%}
+        {% if (trips or destinations or activities)%}
             <h1>Results</h1>
             {% if trips %}
                 <h3>Trips</h3>
@@ -15,6 +15,13 @@
                 <h3>Destinations</h3>
                 {% for dest in destinations %}
                     {{ dest[0] }}
+                {% endfor %}
+            {% endif %}
+
+            {% if activities %}
+                <h3>Activities</h3>
+                {% for act in activities %}
+                    {{ act[0] }}
                 {% endfor %}
             {% endif %}
 

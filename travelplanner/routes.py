@@ -48,7 +48,15 @@ def search():
         query = "SELECT d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = " + str(currentUserId) + " AND d.name LIKE '%" + text + "%'"
         destinations = db.runQuery(query)
 
-        return render_template("search.html", title="Search", trips=trips, destinations=destinations) 
+        query = '''SELECT a.name FROM activity a 
+                    INNER JOIN activityType at ON a.typeId = at.id
+                    INNER JOIN destinationActivity da ON a.id = da.activityId
+                    INNER JOIN destination d ON da.destinationId = d.id 
+                    INNER JOIN trip t ON d.tripId = t.id
+                    WHERE t.userId = ''' + str(currentUserId) + " AND (a.name LIKE '%" + text + "%' OR a.notes LIKE '%" + text + "%' OR at.name LIKE '%" + text + "%')"
+        activities = db.runQuery(query)
+
+        return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
 
     return redirect(url_for('index'))
 
