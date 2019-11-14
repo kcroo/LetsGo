@@ -40,9 +40,6 @@ def search():
     if request.method == 'POST':
         text = request.form['search']
 
-        if text == '':
-            return redirect(url_for('index')) 
-
         # search for each word in text (separated by space)
         words = text.split()
 
