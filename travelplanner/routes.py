@@ -12,7 +12,11 @@
 #   how to print form errors: https://stackoverflow.com/questions/10722968/flask-wtf-validate-on-submit-is-never-executed
 #   jinja control structures: https://jinja.palletsprojects.com/en/2.10.x/templates/
 #   bootstrap modals: https://getbootstrap.com/docs/4.0/components/modal/
+
+#   sql wildcards and LIKE: https://stackoverflow.com/questions/3134691/python-string-formats-with-sql-wildcards-and-like
+=======
 #   last_insert_id() in mysql: https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id
+
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
@@ -31,9 +35,59 @@ def test():
 
 
 # index route
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html", title="")
+    return render_template("index.html", title="") 
+
+@app.route('/search', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        text = request.form['search']
+
+        # search for each word in text (separated by space)
+        words = text.split()
+
+        strCurrentUserId = str(currentUserId)
+        trips = []
+        destinations = []
+        activities = []
+
+        for word in words:
+            likeText = '%' + word + '%'
+
+            # get matching trips
+            query = "SELECT id, name FROM trip WHERE userId = %s AND name LIKE %s"
+            params = (strCurrentUserId, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                trips.append(r)
+            
+            # get matching destinations
+            query = "SELECT t.id, d.id, d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
+            params = (strCurrentUserId, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                destinations.append(r)
+
+            # get matching activities
+            query = """SELECT t.id, d.id, d.name, a.name FROM activity a 
+                        INNER JOIN activityType at ON a.typeId = at.id
+                        INNER JOIN destinationActivity da ON a.id = da.activityId
+                        INNER JOIN destination d ON da.destinationId = d.id 
+                        INNER JOIN trip t ON d.tripId = t.id
+                        WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
+                        """
+            params = (strCurrentUserId, likeText, likeText, likeText)
+            result = db.runQuery(query, params=params)
+
+            for r in result:
+                activities.append(r)
+
+        return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
+
+    return redirect(url_for('index'))
 
 # shows all trips
 @app.route('/mytrips')

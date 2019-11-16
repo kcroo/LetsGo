@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="container">
+        {% if (trips or destinations or activities)%}
+            <h1>Search Results</h1>
+            <table class="table">
+                <thead>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>View</th>
+                </thead>
+                <tbody>
+                    {% if trips %}
+                        {% for trip in trips %}
+                            <tr>
+                                <td>Trip</td>
+                                <td>{{ trip[1] }}</td>
+                                <td><a class= "btn btn-info" href="{{ url_for('showTrip', tripId=trip[0]) }}">View</a></td>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if destinations %}
+                        {% for dest in destinations %}
+                            <tr>
+                                <td>Destination</td>
+                                <td>{{ dest[2] }}</td>
+                                <td><a class= "btn btn-info" href="{{ url_for('showDestination', tripId=dest[0], destId=dest[1]) }}">View</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if activities %}
+                        {% for act in activities %}
+                            <tr>
+                                <td>Activity</td>
+                                <td>{{ act[3] }} ({{ act[2] }})</td>
+                                <td><a class= "btn btn-info" href="{{ url_for('showDestination', tripId=act[0], destId=act[1]) }}">View</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <h1>No results found</h1>
+        {% endif %}
+    </div>
+    
+{% endblock %}
