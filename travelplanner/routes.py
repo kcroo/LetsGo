@@ -12,9 +12,9 @@
 #   how to print form errors: https://stackoverflow.com/questions/10722968/flask-wtf-validate-on-submit-is-never-executed
 #   jinja control structures: https://jinja.palletsprojects.com/en/2.10.x/templates/
 #   bootstrap modals: https://getbootstrap.com/docs/4.0/components/modal/
-
+#
 #   sql wildcards and LIKE: https://stackoverflow.com/questions/3134691/python-string-formats-with-sql-wildcards-and-like
-=======
+#
 #   last_insert_id() in mysql: https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id
 
 ##############################################################################
