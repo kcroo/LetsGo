@@ -9,7 +9,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf, Optional
 from datetime import date, timedelta
 
 from travelplanner import db
@@ -19,9 +19,9 @@ class NewTrip(FlaskForm):
     nextWeek = tomorrow + timedelta(weeks=1)
 
     tripName = StringField('Trip Name', validators=[DataRequired(), Length(min=1, max=255)])
-    numberOfPeople = IntegerField('Number of People', default=1, widget=NumberInput(), validators=[NumberRange(min=1, max=100)])
-    startDate = DateField('Start Date', default=tomorrow)
-    endDate = DateField('End Date', default=nextWeek)
+    numberOfPeople = IntegerField('Number of People', default=1, widget=NumberInput(), validators=[NumberRange(min=1, max=100), Optional()])
+    startDate = DateField('Start Date', default=tomorrow, validators=[Optional()])
+    endDate = DateField('End Date', default=nextWeek, validators=[Optional()])
     submit = SubmitField('Create Trip')
 
 class AddDestination(FlaskForm):

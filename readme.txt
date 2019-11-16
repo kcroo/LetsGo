@@ -37,5 +37,5 @@ mysql -u cs340_corraok -p -h classmysql.engr.oregonstate.edu cs340_corraok
 
 POSSIBLE ISSUES 
 
-- need hard rest after changing static file 
+- need hard reset after changing static file 
 in browser, ctrl-shift-r
