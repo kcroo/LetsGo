@@ -119,7 +119,7 @@ def editTrip(tripId):
             form.endDate.data = result[0][4]
         form.submit.label.text = 'Edit Trip'
         
-        return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form)
+        return render_template("editTrip.html", title="- Edit Trip", legend="Edit Trip", form=form)
 
     elif form.validate_on_submit():
         query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
