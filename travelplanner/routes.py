@@ -12,6 +12,7 @@
 #   how to print form errors: https://stackoverflow.com/questions/10722968/flask-wtf-validate-on-submit-is-never-executed
 #   jinja control structures: https://jinja.palletsprojects.com/en/2.10.x/templates/
 #   bootstrap modals: https://getbootstrap.com/docs/4.0/components/modal/
+#   last_insert_id() in mysql: https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
@@ -37,8 +38,9 @@ def index():
 # shows all trips
 @app.route('/mytrips')
 def myTrips():
-    query = "SELECT * FROM trip WHERE id = " + str(currentUserId)
-    trips = db.runQuery(query)
+    query = "SELECT * FROM trip WHERE userId = %s"
+    params = (str(currentUserId),)
+    trips = db.runQuery(query, params) 
 
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
@@ -114,7 +116,22 @@ def showDestination(tripId, destId):
 @app.route('/newtrip', methods=['GET', 'POST'])
 def newTrip():
     form = NewTrip()
-    return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form)
+
+    if request.method == 'GET':
+        return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form)
+
+    elif request.method == 'POST' and form.validate_on_submit():
+        query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
+        params = (form.tripName.data, currentUserId, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        db.runQuery(query, params=params)
+
+        query = "SELECT LAST_INSERT_ID()"
+        id = db.runQuery(query)[0][0]
+
+        return redirect(url_for('showTrip', tripId=id))
+
+    else:
+        return redirect(url_for('myTrips'))
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
