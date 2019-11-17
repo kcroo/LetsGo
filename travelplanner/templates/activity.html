@@ -41,7 +41,7 @@
                                 {{ act[3] }}
                             </td>
                             <td>
-                                <a class= "btn btn-warning" href="{{ url_for('editActivity', tripId=tripId, destId=d[0]) }}">Edit</a>
+                                <a class= "btn btn-warning" href="{{ url_for('editActivity', tripId=tripId, destId=act[0]) }}">Edit</a>
                             </td>
                             <td>
                                 <button class="btn btn-danger">Delete</button>
@@ -67,6 +67,10 @@
                 <div class="form-group">
                     {{ form.activityType.label(class="form-control-label") }}
                     {{ form.activityType(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.activityNote.label(class="form-control-label") }}
+                    {{ form.activityNote(class="form-control") }}
                 </div>
                 <div class="form-group">
                     {{ form.submit(class="form-control") }}
