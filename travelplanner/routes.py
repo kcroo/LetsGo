@@ -150,8 +150,9 @@ def showTrip(tripId):
 @app.route('/mytrips/<tripId>/<destId>/delete', methods=['POST'])
 def deleteDestination(tripId, destId):
     # select all activities associated with this destination (may need to delete these activities)
-    query = "SELECT a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
-    activities = db.runQuery(query)
+    query = "SELECT a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = %s"
+    params = (destId,)
+    activities = db.runQuery(query, params)
 
     # delete destination (also deletes associated destinationActivity)
     query = "DELETE FROM destination WHERE id = %s"
