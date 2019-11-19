@@ -144,7 +144,7 @@ CREATE TABLE destinationActivity (
         ON DELETE CASCADE,
     FOREIGN KEY fkAct(activityId)
         REFERENCES activity(id)
-        ON DELETE CASCADE
+        ON DELETE NO ACTION
 );
 
 -- cascade lakes: share all activities 

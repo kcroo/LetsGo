@@ -174,7 +174,7 @@ def deleteDestination(tripId, destId):
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 def showDestination(tripId, destId):
-    query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
+    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
     activities = db.runQuery(query)
 
     query = "SELECT name FROM activityType"
@@ -189,7 +189,27 @@ def showDestination(tripId, destId):
     form = AddActivity()
     #form.activityType.choices = choices
     
-    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
+    return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=tripName, destName=destName, activities=activities, form=form)
+
+# delete activity 
+@app.route('/mytrips/<tripId>/<destId>/<actId>/delete', methods=['POST'])
+def deleteActivity(tripId, destId, actId):
+    # delete instance in destinationActivity
+    query = "DELETE FROM destinationActivity WHERE destinationId = %s AND activityId = %s"
+    params = (destId, actId)
+    db.runQuery(query, params)
+
+    # if activity is NOT shared by another destination, also delete activity
+    query = "SELECT destinationId FROM destinationActivity WHERE activityId = %s"
+    params = (actId,)
+    otherDestinations = db.runQuery(query, params)
+
+    if not otherDestinations:
+        query = "DELETE FROM activity WHERE id = %s"
+        params = (actId,)
+        db.runQuery(query, params)
+
+    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
