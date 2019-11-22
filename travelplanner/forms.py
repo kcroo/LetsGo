@@ -59,3 +59,8 @@ class NewUser(FlaskForm):
 class SwitchUser(FlaskForm):
     user = SelectField('Users', choices=[], validators=[DataRequired()], coerce=int)
     submit = SubmitField('Switch User')
+
+class Login(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=1, max=255)])
+    submit = SubmitField('Login')

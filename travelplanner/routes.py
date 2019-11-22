@@ -20,12 +20,11 @@
 ##############################################################################
 
 from flask import flash, render_template, request, redirect, url_for
+from flask_login import login_user, current_user, logout_user, login_required
 from flask_mysqldb import MySQL
 from travelplanner import app, db, bcrypt
-from .forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
-
-### replace with user login later ### 
-currentUserId = 1
+from .forms import NewTrip, AddDestination, AddActivity, Login, NewUser, SwitchUser
+from .login import User, loadUser
 
 # db test route 
 @app.route('/test')
@@ -40,6 +39,7 @@ def index():
     return render_template("index.html", title="") 
 
 @app.route('/search', methods=['POST'])
+@login_required
 def search():
     if request.method == 'POST':
         text = request.form['search']
@@ -47,7 +47,6 @@ def search():
         # search for each word in text (separated by space)
         words = text.split()
 
-        strCurrentUserId = str(currentUserId)
         trips = []
         destinations = []
         activities = []
@@ -57,7 +56,7 @@ def search():
 
             # get matching trips
             query = "SELECT id, name FROM trip WHERE userId = %s AND name LIKE %s"
-            params = (strCurrentUserId, likeText)
+            params = (current_user.id, likeText)
             result = db.runQuery(query, params=params)
 
             for r in result:
@@ -65,7 +64,7 @@ def search():
             
             # get matching destinations
             query = "SELECT t.id, d.id, d.name FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE userId = %s AND d.name LIKE %s"
-            params = (strCurrentUserId, likeText)
+            params = (current_user.id, likeText)
             result = db.runQuery(query, params=params)
 
             for r in result:
@@ -79,7 +78,7 @@ def search():
                         INNER JOIN trip t ON d.tripId = t.id
                         WHERE t.userId = %s AND (a.name LIKE %s OR a.notes LIKE %s OR at.name LIKE %s)
                         """
-            params = (strCurrentUserId, likeText, likeText, likeText)
+            params = (current_user.id, likeText, likeText, likeText)
             result = db.runQuery(query, params=params)
 
             for r in result:
@@ -91,15 +90,17 @@ def search():
 
 # shows all trips
 @app.route('/mytrips')
+@login_required
 def myTrips():
     query = "SELECT * FROM trip WHERE userId = %s"
-    params = (str(currentUserId),)
+    params = (str(current_user.id))
     trips = db.runQuery(query, params) 
 
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # edit trip
 @app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
+@login_required
 def editTrip(tripId):
     form = NewTrip()
 
@@ -107,7 +108,7 @@ def editTrip(tripId):
         query = "SELECT name, userId, numberOfPeople, startDate, endDate FROM trip WHERE id = " + str(tripId)
         result = db.runQuery(query)
 
-        if result[0][1] != currentUserId:
+        if result[0][1] != str(current_user.id):
             return redirect(url_for('index'))
 
         form.tripName.data = result[0][0]
@@ -130,6 +131,7 @@ def editTrip(tripId):
 
 # delete trip 
 @app.route('/mytrips/<tripId>/delete', methods=['POST'])
+@login_required
 def deleteTrip(tripId):
     query = "DELETE FROM trip WHERE id = " + str(tripId)
     db.runQuery(query)
@@ -137,6 +139,7 @@ def deleteTrip(tripId):
 
 # shows individual trip --> show destination(s) for the trip
 @app.route('/trip/<tripId>', methods=['GET', 'POST'])
+@login_required
 def showTrip(tripId):
     query = "SELECT * FROM destination WHERE tripId = '" + tripId + "'"
     destinations = db.runQuery(query) 
@@ -148,6 +151,7 @@ def showTrip(tripId):
 
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
+@login_required
 def showDestination(tripId, destId):
     query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
     activities = db.runQuery(query)
@@ -168,6 +172,7 @@ def showDestination(tripId, destId):
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
+@login_required
 def newTrip():
     form = NewTrip()
 
@@ -176,7 +181,7 @@ def newTrip():
 
     elif request.method == 'POST' and form.validate_on_submit():
         query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
-        params = (form.tripName.data, currentUserId, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
         db.runQuery(query, params=params)
 
         query = "SELECT LAST_INSERT_ID()"
@@ -202,17 +207,26 @@ def newUser():
 
     return render_template("newuser.html", title=" - New User", form=form)
 
-# switch user 
-@app.route('/switchuser', methods=['GET', 'POST'])
-def switchUser():
-    global currentUserId
-    query = "SELECT id, username FROM user WHERE NOT id = " + str(currentUserId)
-    users = db.runQuery(query)
-    form = SwitchUser()
-    form.user.choices = users
-
-    if form.validate_on_submit():
-        currentUserId = form.user.data
+# log in 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    return render_template("switchuser.html", title="- Switch User", form=form)
+    form = Login()
+
+    if request.method == 'POST':
+        username = form.username.data
+        query = 'SELECT id, pw FROM user WHERE username = %s'
+        params = (username,)
+        result = db.runQuery(query, params)
+        print(username)
+        print(result[0][0])
+
+        if result and bcrypt.check_password_hash(result[0][1], form.password.data):
+            login_user(User(id=result[0][0], username=username))
+            return redirect(url_for('index'))
+        else:
+            print('invalid password')
+
+    return render_template("login.html", title="- Login", form=form)
