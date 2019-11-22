@@ -21,7 +21,7 @@
 
 from flask import flash, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
-from travelplanner import app, db
+from travelplanner import app, db, bcrypt
 from .forms import NewTrip, AddDestination, AddActivity, NewUser, SwitchUser
 
 ### replace with user login later ### 
@@ -193,8 +193,11 @@ def newUser():
     form = NewUser()
 
     if form.validate_on_submit():
-        query = "INSERT INTO user(username) VALUES('" + form.username.data + "')"
-        db.runQuery(query)
+        # generate hashed password: decode converts it from bytes literal to string 
+        hashedPassword = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        query = "INSERT INTO user(username, email, pw) VALUES(%s, %s, %s)"
+        params = (form.username.data, form.email.data, hashedPassword)
+        db.runQuery(query, params)
         return redirect(url_for('index'))
 
     return render_template("newuser.html", title=" - New User", form=form)
