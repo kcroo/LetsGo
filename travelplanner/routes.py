@@ -223,6 +223,13 @@ def login():
 
     return render_template("login.html", title="- Login", form=form)
 
+# log out 
+@app.route('/logout', methods=['GET'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 # reset database 
 @app.route('/reset', methods=['GET'])
 def resetDB():

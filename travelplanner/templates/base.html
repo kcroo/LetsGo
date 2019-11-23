@@ -19,17 +19,23 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link active" href="/">Home<span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="{{ url_for('myTrips') }}">My Trips</a>
-                <a class="nav-item nav-link" href="{{ url_for('newTrip') }}">New Trip</a>
+                {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{{ url_for('myTrips') }}">My Trips</a>
+                    <a class="nav-item nav-link" href="{{ url_for('newTrip') }}">New Trip</a>
+                {% endif %}
             </div>
             <div class="navbar-nav ml-auto">
-                <a class="nav-item nav-link" href="/newuser">New User</a>
-                <a class="nav-item nav-link" href="/login">Login</a>
-                <a class="nav-item nav-link" href="/switchuser">Switch User</a>
-                <form action="{{ url_for('search') }}" class="form-inline" method="POST">
-                    <input class="form-control mr-sm-2" type="search" name= "search" placeholder="Search" aria-label="Search" required>
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                {% if not current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="/newuser">New User</a>
+                    <a class="nav-item nav-link" href="/login">Login</a>
+                {% else %}
+                    <span class="nav-item navbar-text ml-sm-2 mr-sm-2">Hi, user!</span>
+                    <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    <form action="{{ url_for('search') }}" class="form-inline" method="POST">
+                        <input class="form-control mr-sm-2" type="search" name= "search" placeholder="Search" aria-label="Search" required>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
         
