@@ -246,10 +246,11 @@ def login():
 
         if result and bcrypt.check_password_hash(result[0][1], form.password.data):
             login_user(User(id=result[0][0], username=username))
+            flash('You are now logged in.', 'success')
             return redirect(url_for('index'))
         else:
-            ### need to change
-            print('invalid password')
+            print("invalid password")
+            flash('Login failed. Please check username and password.', 'danger')
 
     return render_template("login.html", title="- Login", form=form)
 
@@ -258,6 +259,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('You are now logged out.', 'success')
     return redirect(url_for('index'))
 
 # reset database 
