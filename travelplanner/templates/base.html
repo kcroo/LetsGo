@@ -29,7 +29,7 @@
                     <a class="nav-item nav-link" href="/newuser">New User</a>
                     <a class="nav-item nav-link" href="/login">Login</a>
                 {% else %}
-                    <span class="nav-item navbar-text ml-sm-2 mr-sm-2">Hi, user!</span>
+                    <span class="nav-item navbar-text ml-sm-2 mr-sm-2">Hi, {{ username }}!</span>
                     <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                     <form action="{{ url_for('search') }}" class="form-inline" method="POST">
                         <input class="form-control mr-sm-2" type="search" name= "search" placeholder="Search" aria-label="Search" required>

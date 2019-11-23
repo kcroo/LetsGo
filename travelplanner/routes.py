@@ -29,7 +29,11 @@ from .login import User, loadUser
 # index route
 @app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html", title="") 
+    username = ""
+    if current_user.is_authenticated:
+        username = current_user.username.capitalize()
+
+    return render_template("index.html", title="", username=username) 
 
 @app.route('/search', methods=['POST'])
 @login_required
@@ -77,7 +81,7 @@ def search():
             for r in result:
                 activities.append(r)
 
-        return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities) 
+        return render_template("search.html", title="Search", trips=trips, destinations=destinations, activities=activities, username=current_user.username.capitalize()) 
 
     return redirect(url_for('index'))
 
@@ -88,8 +92,9 @@ def myTrips():
     query = "SELECT * FROM trip WHERE userId = %s"
     params = (str(current_user.id))
     trips = db.runQuery(query, params) 
+    print(current_user.username)
 
-    return render_template("mytrips.html", title="- My Trips", trips=trips)
+    return render_template("mytrips.html", title="- My Trips", trips=trips, username=current_user.username.capitalize())
 
 # edit trip
 @app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
@@ -113,7 +118,7 @@ def editTrip(tripId):
             form.endDate.data = result[0][4]
         form.submit.label.text = 'Edit Trip'
         
-        return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form)
+        return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form, username=current_user.username.capitalize())
 
     elif form.validate_on_submit():
         query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
@@ -140,7 +145,7 @@ def showTrip(tripId):
     tripName = db.runQuery(query)[0][0]
 
     form = AddDestination()
-    return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form)
+    return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form, username=current_user.username.capitalize())
 
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
@@ -161,7 +166,7 @@ def showDestination(tripId, destId):
     form = AddActivity()
     #form.activityType.choices = choices
     
-    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
+    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form, username=current_user.username.capitalize())
 
 # make new trip
 @app.route('/newtrip', methods=['GET', 'POST'])
@@ -170,7 +175,7 @@ def newTrip():
     form = NewTrip()
 
     if request.method == 'GET':
-        return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form)
+        return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
         query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
