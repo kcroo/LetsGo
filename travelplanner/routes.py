@@ -147,11 +147,36 @@ def showTrip(tripId):
     form = AddDestination()
     return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form, username=current_user.username.capitalize())
 
+# delete destination 
+@app.route('/mytrips/<tripId>/<destId>/delete', methods=['POST'])
+def deleteDestination(tripId, destId):
+    # select all activities associated with this destination (may need to delete these activities)
+    query = "SELECT a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = %s"
+    params = (destId,)
+    activities = db.runQuery(query, params)
+
+    # delete destination (also deletes associated destinationActivity)
+    query = "DELETE FROM destination WHERE id = %s"
+    params = (destId,)
+    db.runQuery(query, params)
+
+    # if associated activity isn't used by any other destination: delete it also 
+    for a in activities:
+        query = "SELECT activityId FROM destinationActivity WHERE activityId = %s"
+        params = (a,)
+        result = db.runQuery(query, params)
+        if not result:
+            query = "DELETE FROM activity WHERE id = %s"
+            db.runQuery(query, params)
+    
+
+    return redirect(url_for('showTrip', tripId=tripId))
+
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 @login_required
 def showDestination(tripId, destId):
-    query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
+    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
     activities = db.runQuery(query)
 
     query = "SELECT name FROM activityType"
