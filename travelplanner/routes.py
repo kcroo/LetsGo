@@ -194,7 +194,7 @@ def newUser():
         # generate hashed password: decode converts it from bytes literal to string 
         hashedPassword = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         query = "INSERT INTO user(username, email, pw) VALUES(%s, %s, %s)"
-        params = (form.username.data, form.email.data, hashedPassword)
+        params = (form.username.data.lower(), form.email.data, hashedPassword)
         db.runQuery(query, params)
         return redirect(url_for('index'))
 
@@ -209,7 +209,7 @@ def login():
     form = Login()
 
     if request.method == 'POST':
-        username = form.username.data
+        username = form.username.data.lower()
         query = 'SELECT id, pw FROM user WHERE username = %s'
         params = (username,)
         result = db.runQuery(query, params)
@@ -253,12 +253,12 @@ def resetDB():
     # users
     hashedPassword = bcrypt.generate_password_hash('samwise').decode('utf-8')
     query = "INSERT INTO user (username, email, pw) VALUES(%s, %s, %s)"
-    params = ('Samwise', 'sam@gamgee.com', hashedPassword)
+    params = ('samwise', 'sam@gamgee.com', hashedPassword)
     db.runQuery(query, params=params)
 
     hashedPassword = bcrypt.generate_password_hash('frodo').decode('utf-8')
     query = "INSERT INTO user (username, email, pw) VALUES(%s, %s, %s)"
-    params = ('Frodo', 'frodo@baggins.com', hashedPassword)
+    params = ('frodo', 'frodo@baggins.com', hashedPassword)
     db.runQuery(query, params=params)
     
     query = []
