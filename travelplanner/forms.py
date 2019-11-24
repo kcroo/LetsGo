@@ -34,7 +34,6 @@ class AddActivity(FlaskForm):
     activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)])
     activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0)])
     activityType = SelectField('Activity Type', choices=[])
-    activityNote = StringField('Notes')
     submit = SubmitField('Add Activity')
  
 class NewUser(FlaskForm):
