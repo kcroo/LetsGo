@@ -106,9 +106,6 @@ def editTrip(tripId):
         query = "SELECT name, userId, numberOfPeople, startDate, endDate FROM trip WHERE id = " + str(tripId)
         result = db.runQuery(query)
 
-        if result[0][1] != str(current_user.id):
-            return redirect(url_for('index'))
-
         form.tripName.data = result[0][0]
         if result[0][2]:
             form.numberOfPeople.data = result[0][2]
