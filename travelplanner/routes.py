@@ -97,7 +97,7 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips, username=current_user.username.capitalize())
 
 # edit trip
-@app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
+@app.route('/mytrips/<tripId>/editT', methods=['GET', 'POST'])
 @login_required
 def editTrip(tripId):
     form = NewTrip()
@@ -118,7 +118,7 @@ def editTrip(tripId):
             form.endDate.data = result[0][4]
         form.submit.label.text = 'Edit Trip'
         
-        return render_template("newtrip.html", title="- Edit Trip", legend="Edit Trip", form=form, username=current_user.username.capitalize())
+        return render_template("editTrip.html", title="- Edit Trip", legend="Edit Trip", form=form, username=current_user.username.capitalize())
 
     elif form.validate_on_submit():
         query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
@@ -147,6 +147,34 @@ def showTrip(tripId):
     form = AddDestination()
     return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form, username=current_user.username.capitalize())
 
+# edit destination
+@app.route('/trip/<tripId>/<destId>/editD', methods=['GET', 'POST'])
+@login_required
+def editDestination(tripId,destId):
+    form = AddDestination()
+
+    if request.method == 'GET':
+        query = "SELECT name, tripId, arriveDate, leaveDate FROM destination WHERE tripId = " + str(tripId)
+        result = db.runQuery(query)
+        query = "SELECT name FROM trip WHERE id = " + str(tripId)
+        tripName = db.runQuery(query)[0][0]
+
+        form.destinationName.data = result[0][0]
+        if result[0][2]:
+            form.arriveDate.data = result[0][2]
+        if result[0][3]:
+            form.leaveDate.data = result[0][3]
+        form.submit.label.text = 'Edit Destination'
+        
+        return render_template("editDestination.html", title="- Edit Destination", legend="Edit Destination", tripId=tripId, tripName=tripName, destId=destId, form=form,  username=current_user.username.capitalize())
+
+    elif form.validate_on_submit():
+        query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + tripId 
+        params = [form.destinationName.data, form.arriveDate.data, form.leaveDate.data]
+        db.runQuery(query, params=params)
+
+    return redirect(url_for('showTrip', tripId=tripId))
+
 # delete destination 
 @app.route('/mytrips/<tripId>/<destId>/delete', methods=['POST'])
 def deleteDestination(tripId, destId):
@@ -172,7 +200,7 @@ def deleteDestination(tripId, destId):
 
     return redirect(url_for('showTrip', tripId=tripId))
 
-# shows individual destination and its activities
+# show activity --> shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 @login_required
 def showDestination(tripId, destId):
@@ -192,6 +220,40 @@ def showDestination(tripId, destId):
     #form.activityType.choices = choices
     
     return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=tripName, destName=destName, activities=activities, form=form, username=current_user.username.capitalize())
+
+# edit activity
+@app.route('/trip/<tripId>/<destId>/<actId>/editA', methods=['GET', 'POST'])
+@login_required
+def editActivity(tripId,destId,actId):
+    form = AddActivity()
+
+    if request.method == 'GET':
+        query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
+        result = db.runQuery(query)
+
+        query = "SELECT name FROM trip WHERE id = " + str(tripId)
+        tripName = db.runQuery(query)[0][0]
+
+        query = "SELECT name FROM destination WHERE id = " + str(destId)
+        destName = db.runQuery(query)[0][0]
+
+        form.activityName.data = result[0][1]
+        if result[0][2]:
+            form.activityType.data = result[0][2]
+        if result[0][3]:
+            form.activityCost.data = result[0][3]
+        if result[0][4]:
+            form.activityNote.data = result[0][4]
+        form.submit.label.text = 'Edit Activity'
+        
+        return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
+
+    elif form.validate_on_submit():
+        query = "UPDATE activity SET name=%s, activityCost=%s, activityType=%s, activityNote=%s WHERE id = " + actId 
+        params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data]
+        db.runQuery(query, params=params)
+
+    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
 # delete activity 
 @app.route('/mytrips/<tripId>/<destId>/<actId>/delete', methods=['POST'])
