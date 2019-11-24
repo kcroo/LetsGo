@@ -16,6 +16,7 @@
 #   sql wildcards and LIKE: https://stackoverflow.com/questions/3134691/python-string-formats-with-sql-wildcards-and-like
 #
 #   last_insert_id() in mysql: https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id
+#   make tuple of tuples returned from db into a list: https://stackoverflow.com/questions/3204245/how-do-i-convert-a-tuple-of-tuples-to-a-one-dimensional-list-using-list-comprehe/3204267#3204267
 
 ##############################################################################
 
@@ -228,7 +229,7 @@ def editActivity(tripId,destId,actId):
     form = AddActivity()
 
     if request.method == 'GET':
-        query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
+        query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = " + str(actId)
         result = db.runQuery(query)
 
         query = "SELECT name FROM trip WHERE id = " + str(tripId)
@@ -249,8 +250,13 @@ def editActivity(tripId,destId,actId):
         return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
 
     elif form.validate_on_submit():
-        query = "UPDATE activity SET name=%s, activityCost=%s, activityType=%s, activityNote=%s WHERE id = " + actId 
-        params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data]
+        query = "UPDATE activity SET name=%s, cost=%s, typeId=%s, notes=%s WHERE id = %s"
+
+        if form.activityType.data == 'None':
+            form.activityType.data = None
+
+        print(form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId)
+        params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId]
         db.runQuery(query, params=params)
 
     return redirect(url_for('showDestination', tripId=tripId, destId=destId))
@@ -366,7 +372,7 @@ def resetDB():
     query.append("CREATE TABLE trip (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, userId INT NOT NULL, numberOfPeople INT, startDate DATE, endDate DATE, PRIMARY KEY(id), FOREIGN KEY fkUser(userId) REFERENCES user(id) ON DELETE CASCADE);")
     query.append("CREATE TABLE destination (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, tripId INT NOT NULL, arriveDate DATE, leaveDate DATE, PRIMARY KEY(id), FOREIGN KEY fkTrip(tripId) REFERENCES trip(id) ON DELETE CASCADE);")
     query.append("CREATE TABLE activityType (id int AUTO_INCREMENT, name VARCHAR(100) NOT NULL, PRIMARY KEY(id));")
-    query.append("CREATE TABLE activity (id INT AUTO_INCREMENT, name VARCHAR(100) NOT NULL, typeId int, cost INT, notes VARCHAR(255), PRIMARY KEY(id), FOREIGN KEY fkType(typeId) REFERENCES activityType(id) ON DELETE SET NULL);")
+    query.append("CREATE TABLE activity (id INT AUTO_INCREMENT, name VARCHAR(100) NOT NULL, typeId int NULL, cost INT, notes VARCHAR(255), PRIMARY KEY(id), FOREIGN KEY fkType(typeId) REFERENCES activityType(id) ON DELETE SET NULL);")
     query.append("CREATE TABLE destinationActivity (destinationId INT NOT NULL, activityId INT NOT NULL, PRIMARY KEY(destinationId, activityId), FOREIGN KEY fkDest(destinationId) REFERENCES destination(id) ON DELETE CASCADE, FOREIGN KEY fkAct(activityId) REFERENCES activity(id) ON DELETE CASCADE);")
 
     db.runMultipleQueries(query)

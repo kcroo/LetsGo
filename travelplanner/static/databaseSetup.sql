@@ -102,7 +102,7 @@ INSERT INTO activityType(name) VALUES('OHV');
 CREATE TABLE activity (
     id INT AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    typeId int,
+    typeId int NULL,
     cost INT,
     notes VARCHAR(255),
     PRIMARY KEY(id),
