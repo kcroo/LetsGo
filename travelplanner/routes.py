@@ -228,7 +228,7 @@ def editActivity(tripId,destId,actId):
     form = AddActivity()
 
     if request.method == 'GET':
-        query = "SELECT a.name, a.typeId, a.cost, a.notes, a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
+        query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
         result = db.runQuery(query)
 
         query = "SELECT name FROM trip WHERE id = " + str(tripId)
@@ -237,13 +237,13 @@ def editActivity(tripId,destId,actId):
         query = "SELECT name FROM destination WHERE id = " + str(destId)
         destName = db.runQuery(query)[0][0]
 
-        form.activityName.data = result[0][0]
-        if result[0][1]:
-            form.activityType.data = result[0][1]
+        form.activityName.data = result[0][1]
         if result[0][2]:
-            form.activityCost.data = result[0][2]
+            form.activityType.data = result[0][2]
         if result[0][3]:
-            form.activityNote.data = result[0][3]
+            form.activityCost.data = result[0][3]
+        if result[0][4]:
+            form.activityNote.data = result[0][4]
         form.submit.label.text = 'Edit Activity'
         
         return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
