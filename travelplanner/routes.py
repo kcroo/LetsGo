@@ -151,10 +151,13 @@ def editDestination(tripId,destId):
     form = AddDestination()
 
     if request.method == 'GET':
-        query = "SELECT name, tripId, arriveDate, leaveDate FROM destination WHERE tripId = " + str(tripId)
-        result = db.runQuery(query)
-        query = "SELECT name FROM trip WHERE id = " + str(tripId)
-        tripName = db.runQuery(query)[0][0]
+        query = "SELECT name, tripId, arriveDate, leaveDate FROM destination WHERE id = %s"
+        params = (destId,)
+        result = db.runQuery(query, params)
+
+        query = "SELECT name FROM trip WHERE id = %s"
+        params = (tripId,)
+        tripName = db.runQuery(query, params)[0][0]
 
         form.destinationName.data = result[0][0]
         if result[0][2]:
@@ -166,7 +169,7 @@ def editDestination(tripId,destId):
         return render_template("editDestination.html", title="- Edit Destination", legend="Edit Destination", tripId=tripId, tripName=tripName, destId=destId, form=form,  username=current_user.username.capitalize())
 
     elif form.validate_on_submit():
-        query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + tripId 
+        query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + destId 
         params = [form.destinationName.data, form.arriveDate.data, form.leaveDate.data]
         db.runQuery(query, params=params)
 
