@@ -99,7 +99,7 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # edit trip
-@app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
+@app.route('/mytrips/<tripId>/editT', methods=['GET', 'POST'])
 def editTrip(tripId):
     form = NewTrip()
 
@@ -147,13 +147,15 @@ def showTrip(tripId):
     return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form)
 
 # edit destination
-@app.route('/trip/<tripId>/edit', methods=['GET', 'POST'])
-def editDestination(tripId):
+@app.route('/trip/<tripId>/<destId>/editD', methods=['GET', 'POST'])
+def editDestination(tripId,destId):
     form = AddDestination()
 
     if request.method == 'GET':
         query = "SELECT name, tripId, arriveDate, leaveDate FROM destination WHERE tripId = " + str(tripId)
         result = db.runQuery(query)
+        query = "SELECT name FROM trip WHERE id = " + str(tripId)
+        tripName = db.runQuery(query)[0][0]
 
         form.destinationName.data = result[0][0]
         if result[0][2]:
@@ -162,7 +164,7 @@ def editDestination(tripId):
             form.leaveDate.data = result[0][3]
         form.submit.label.text = 'Edit Destination'
         
-        return render_template("editDestination.html", title="- Edit Destination", legend="Edit Destination", form=form)
+        return render_template("editDestination.html", title="- Edit Destination", legend="Edit Destination", tripId=tripId, tripName=tripName, destId=destId, form=form)
 
     elif form.validate_on_submit():
         query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + tripId 
@@ -174,7 +176,7 @@ def editDestination(tripId):
 # shows individual destination and its activities
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 def showDestination(tripId, destId):
-    query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
+    query = "SELECT a.name, a.typeId, a.cost, a.notes, a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
     activities = db.runQuery(query)
 
     query = "SELECT name FROM activityType"
@@ -189,16 +191,22 @@ def showDestination(tripId, destId):
     form = AddActivity()
     #form.activityType.choices = choices
     
-    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destName=destName, activities=activities, form=form)
+    return render_template("activity.html", title="- ", tripId=tripId, tripName=tripName, destId=destId, destName=destName, activities=activities, form=form)
 
 # edit activity
-@app.route('/trip/<tripId>/<destId>/edit', methods=['GET', 'POST'])
-def editActivity(tripId, destId):
+@app.route('/trip/<tripId>/<destId>/<actId>/editA', methods=['GET', 'POST'])
+def editActivity(tripId,destId,actId):
     form = AddActivity()
 
     if request.method == 'GET':
-        query = "SELECT a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
+        query = "SELECT a.name, a.typeId, a.cost, a.notes, a.id FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + str(destId)
         result = db.runQuery(query)
+
+        query = "SELECT name FROM trip WHERE id = " + str(tripId)
+        tripName = db.runQuery(query)[0][0]
+
+        query = "SELECT name FROM destination WHERE id = " + str(destId)
+        destName = db.runQuery(query)[0][0]
 
         form.activityName.data = result[0][0]
         if result[0][1]:
@@ -208,10 +216,8 @@ def editActivity(tripId, destId):
         if result[0][3]:
             form.activityNote.data = result[0][3]
         form.submit.label.text = 'Edit Activity'
-
-        actId = result[0][4]
         
-        return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", form=form)
+        return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form)
 
     elif form.validate_on_submit():
         query = "UPDATE activity SET name=%s, activityCost=%s, activityType=%s, activityNote=%s WHERE id = " + actId 
