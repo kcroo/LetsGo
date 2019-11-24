@@ -99,7 +99,7 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips)
 
 # edit trip
-@app.route('/mytrips/<tripId>/editT', methods=['GET', 'POST'])
+@app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
 def editTrip(tripId):
     form = NewTrip()
 
