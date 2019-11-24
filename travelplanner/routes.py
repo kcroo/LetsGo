@@ -97,7 +97,7 @@ def myTrips():
     return render_template("mytrips.html", title="- My Trips", trips=trips, username=current_user.username.capitalize())
 
 # edit trip
-@app.route('/mytrips/<tripId>/edit', methods=['GET', 'POST'])
+@app.route('/mytrips/<tripId>/editT', methods=['GET', 'POST'])
 @login_required
 def editTrip(tripId):
     form = NewTrip()
