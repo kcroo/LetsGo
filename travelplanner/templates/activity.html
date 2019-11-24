@@ -38,10 +38,7 @@
                                 {{ act[3] }}
                             </td>
                             <td>
-                                {{ act[4] }}
-                            </td>
-                            <td>
-                                <a class= "btn btn-warning" href="#">Edit</a>
+                                <a class= "btn btn-warning" href="{{ url_for('editActivity', tripId=tripId, destId=destId, actId=act[4]) }}">Edit</a>
                             </td>
                             <td>
                                 <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
@@ -83,12 +80,16 @@
                     {{ form.activityName(class="form-control") }}
                 </div>
                 <div class="form-group">
+                    {{ form.activityType.label(class="form-control-label") }}
+                    {{ form.activityType(class="form-control") }}
+                </div>
+                <div class="form-group">
                     {{ form.activityCost.label(class="form-control-label") }}
                     {{ form.activityCost(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.activityType.label(class="form-control-label") }}
-                    {{ form.activityType(class="form-control") }}
+                    {{ form.activityNote.label(class="form-control-label") }}
+                    {{ form.activityNote(class="form-control") }}
                 </div>
                 <div class="form-group">
                     {{ form.submit(class="form-control") }}
