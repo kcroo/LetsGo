@@ -13,15 +13,14 @@ SET FOREIGN_KEY_CHECKS=1;
 -- user table --
 CREATE TABLE user (
     id INT AUTO_INCREMENT,
-    username VARCHAR(20) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    pw CHAR(60) NOT NULL,
+    username VARCHAR(20) NOT NULL,
     PRIMARY KEY(id)
 );
 
--- these passwords stored in plain text; new users made in website will be stored using hashed bcrypt --
-INSERT INTO user (username, email, pw) VALUES('Samwise', 'sam@gamgee.com', 'samwise');
-INSERT INTO user (username, email, pw) VALUES('Frodo', 'frodo@baggins.com', 'frodo');
+INSERT INTO user (username) VALUES('Samwise');
+INSERT INTO user (username) VALUES('Frodo');
+INSERT INTO user (username) VALUES('Meriadoc');
+INSERT INTO user (username) VALUES('Pippin');
 
 
 -- trip table --
@@ -43,7 +42,7 @@ INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate)
 INSERT INTO trip (name, userId, numberOfPeople) 
     VALUES('China', 2, 1);
 INSERT INTO trip (name, userId) 
-    VALUES('Oregon Coast', 1);
+    VALUES('Oregon Coast', 3);
 
 
 -- destination table --
@@ -145,7 +144,7 @@ CREATE TABLE destinationActivity (
         ON DELETE CASCADE,
     FOREIGN KEY fkAct(activityId)
         REFERENCES activity(id)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 );
 
 -- cascade lakes: share all activities 

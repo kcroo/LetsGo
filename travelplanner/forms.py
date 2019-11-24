@@ -9,7 +9,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf, Optional, Email
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf, Optional
 from datetime import date, timedelta
 
 from travelplanner import db
@@ -39,8 +39,6 @@ class AddActivity(FlaskForm):
  
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=255)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=1, max=255)])
     submit = SubmitField('Create New User')
 
     # validation functions MUST begin with validate_ to run 
@@ -50,18 +48,6 @@ class NewUser(FlaskForm):
         if result:
             raise ValidationError('Username already exists. Please choose another.')
 
-    def validate_email(self, email):
-        query = "SELECT email FROM user WHERE email = %s"
-        params = (email,)
-        result = db.runQuery(query, params)
-        if result:
-            raise ValidationError('Email is taken. Please choose another.')
-
 class SwitchUser(FlaskForm):
     user = SelectField('Users', choices=[], validators=[DataRequired()], coerce=int)
     submit = SubmitField('Switch User')
-
-class Login(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=1, max=255)])
-    submit = SubmitField('Login')
