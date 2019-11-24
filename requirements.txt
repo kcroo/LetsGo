@@ -5,3 +5,5 @@ gunicorn
 mysqlclient
 flask_mysqldb
 flask_wtf
+flask-bcrypt
+flask-login
