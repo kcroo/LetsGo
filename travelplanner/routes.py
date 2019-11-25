@@ -226,7 +226,12 @@ def showDestination(tripId, destId):
 @app.route('/trip/<tripId>/<destId>/<actId>/editA', methods=['GET', 'POST'])
 @login_required
 def editActivity(tripId,destId,actId):
+    # create form and add choices, including blank option
     form = AddActivity()
+    query = 'SELECT id, name FROM activityType'
+    choices = list(db.runQuery(query))
+    choices.insert(0, (0, ''))
+    form.activityType.choices = choices
 
     if request.method == 'GET':
         query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = " + str(actId)
