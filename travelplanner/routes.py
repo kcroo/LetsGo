@@ -216,11 +216,8 @@ def showDestination(tripId, destId):
 
     query = "SELECT name FROM destination WHERE id = " + destId
     destName = db.runQuery(query)[0][0]
-
-    form = AddActivity()
-    #form.activityType.choices = choices
     
-    return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=tripName, destName=destName, activities=activities, form=form, username=current_user.username.capitalize())
+    return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=tripName, destName=destName, activities=activities, username=current_user.username.capitalize())
 
 # edit activity
 @app.route('/trip/<tripId>/<destId>/<actId>/editA', methods=['GET', 'POST'])
@@ -255,10 +252,11 @@ def editActivity(tripId,destId,actId):
         return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
 
     elif form.validate_on_submit():
-        query = "UPDATE activity SET name=%s, cost=%s, typeId=%s, notes=%s WHERE id = %s"
-
-        if form.activityType.data == 'None':
+        # insert activity type was left blank
+        if form.activityType.data == 0:
             form.activityType.data = None
+
+        query = "UPDATE activity SET name=%s, cost=%s, typeId=%s, notes=%s WHERE id = %s"
 
         params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId]
         db.runQuery(query, params=params)

@@ -46,11 +46,11 @@
                             <a class= "btn btn-warning" href="{{ url_for('editDestination', tripId=tripId, destId=d[0]) }}">Edit</a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ d[0] }}">Delete</button>
                         </td>
                     </tr>
                     <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ d[0] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
