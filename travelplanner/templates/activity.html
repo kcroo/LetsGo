@@ -74,7 +74,7 @@
             </tbody>
         </table>
         <div align="left">
-            <a class= "btn btn-success" href="{{ url_for('newActivity') }}">Add New Activity</a>
+            <a class= "btn btn-success" href="{{ url_for('newActivity', tripId=tripId, destId=destId) }}">Add New Activity</a>
         </div>
     </div>
 {% endblock %}

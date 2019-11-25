@@ -310,7 +310,11 @@ def newDestination(tripId):
     form = AddDestination()
 
     if request.method == 'GET':
-        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, form=form, username=current_user.username.capitalize())
+        query = "SELECT name FROM trip WHERE id = %s"
+        params = (tripId,)
+        tripName = db.runQuery(query, params)[0][0]
+
+        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, tripName=tripName, form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
         query = "INSERT INTO destination (name, tripId, arriveDate, leaveDate) VALUES (%s, %s, %s, %s, %s)"
@@ -323,13 +327,21 @@ def newDestination(tripId):
         return redirect(url_for('showTrip', tripId=tripId))
 
 # make new activity
-@app.route('/newActivity', methods=['GET', 'POST'])
+@app.route('trip/<tripId>/<destId>/newActivity', methods=['GET', 'POST'])
 @login_required
-def newActivity():
+def newActivity(tripId, destId):
     form = AddActivity()
 
     if request.method == 'GET':
-        return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", form=form, username=current_user.username.capitalize())
+        query = "SELECT name FROM trip WHERE id = %s"
+        params = (tripId,)
+        tripName = db.runQuery(query)[0][0]
+
+        query = "SELECT name FROM destination WHERE id = %s"
+        prams = (destId,)
+        destName = db.runQuery(query)[0][0]
+
+        return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
         query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
@@ -339,10 +351,10 @@ def newActivity():
         query = "SELECT LAST_INSERT_ID()"
         id = db.runQuery(query)[0][0]
 
-        return redirect(url_for('showDestination', tripId=id))
+        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
     else:
-        return redirect(url_for('showDestination'))
+        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
