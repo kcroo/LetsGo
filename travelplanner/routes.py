@@ -303,6 +303,50 @@ def newTrip():
     else:
         return redirect(url_for('myTrips'))
 
+# make new destination
+@app.route('/newDestination', methods=['GET', 'POST'])
+@login_required
+def newDestination():
+    form = AddDestination()
+
+    if request.method == 'GET':
+        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", form=form, username=current_user.username.capitalize())
+
+    elif request.method == 'POST' and form.validate_on_submit():
+        query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
+        params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        db.runQuery(query, params=params)
+
+        query = "SELECT LAST_INSERT_ID()"
+        id = db.runQuery(query)[0][0]
+
+        return redirect(url_for('showTrip', tripId=id))
+
+    else:
+        return redirect(url_for('showDestination'))
+
+# make new activity
+@app.route('/newActivity', methods=['GET', 'POST'])
+@login_required
+def newActivity():
+    form = AddActivity()
+
+    if request.method == 'GET':
+        return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", form=form, username=current_user.username.capitalize())
+
+    elif request.method == 'POST' and form.validate_on_submit():
+        query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
+        params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        db.runQuery(query, params=params)
+
+        query = "SELECT LAST_INSERT_ID()"
+        id = db.runQuery(query)[0][0]
+
+        return redirect(url_for('showTrip', tripId=id))
+
+    else:
+        return redirect(url_for(''))
+
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
 def newUser():
