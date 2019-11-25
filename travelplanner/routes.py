@@ -298,7 +298,7 @@ def newTrip():
         query = "SELECT LAST_INSERT_ID()"
         id = db.runQuery(query)[0][0]
 
-        return redirect(url_for('showTrip', tripId=id))
+        return redirect(url_for('myTrips', tripId=id))
 
     else:
         return redirect(url_for('myTrips'))
@@ -323,7 +323,7 @@ def newDestination():
         return redirect(url_for('showTrip', tripId=id))
 
     else:
-        return redirect(url_for('showDestination'))
+        return redirect(url_for('showTrip'))
 
 # make new activity
 @app.route('/newActivity', methods=['GET', 'POST'])
@@ -342,10 +342,10 @@ def newActivity():
         query = "SELECT LAST_INSERT_ID()"
         id = db.runQuery(query)[0][0]
 
-        return redirect(url_for('showTrip', tripId=id))
+        return redirect(url_for('showDestination', tripId=id))
 
     else:
-        return redirect(url_for(''))
+        return redirect(url_for('showDestination'))
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
