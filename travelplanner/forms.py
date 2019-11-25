@@ -25,15 +25,18 @@ class NewTrip(FlaskForm):
     submit = SubmitField('Create Trip')
 
 class AddDestination(FlaskForm):
+    tomorrow = date.today() + timedelta(days=1)
+    nextWeek = tomorrow + timedelta(weeks=1)
+
     destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)])
-    arriveDate = DateField('Arrive Date', validators=[Optional()])
-    leaveDate = DateField('Leave Date', validators=[Optional()])
+    arriveDate = DateField('Arrive Date', default=tomorrow, validators=[Optional()])
+    leaveDate = DateField('Leave Date', default=nextWeek, validators=[Optional()])
     submit = SubmitField('Add Destination')
 
 class AddActivity(FlaskForm):
     activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)])
     activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0), Optional()])
-    activityType = SelectField('Activity Type', choices=[], validators=[Optional()])
+    activityType = IntegerField('Activity Type', widget=NumberInput(), validators=[Optional()])
     activityNote = StringField('Notes', validators=[Optional()])
     submit = SubmitField('Add Activity')
  

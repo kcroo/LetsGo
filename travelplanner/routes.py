@@ -317,7 +317,7 @@ def newDestination(tripId):
         return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, tripName=tripName, form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
-        query = "INSERT INTO destination (name, tripId, arriveDate, leaveDate) VALUES (%s, %s, %s, %s, %s)"
+        query = "INSERT INTO destination (name, tripId, arriveDate, leaveDate) VALUES (%s, %s, %s, %s)"
         params = (form.destinationName.data, tripId, form.arriveDate.data, form.leaveDate.data)
         db.runQuery(query, params=params)
 
@@ -344,8 +344,8 @@ def newActivity(tripId, destId):
         return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
-        query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
-        params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        query = "INSERT INTO activity (name, typeId, cost, notes) VALUES (%s, %s, %s, %s)"
+        params = (form.activityName.data, form.activityType.data, form.activityCost.data, form.activityNote.data)
         db.runQuery(query, params=params)
 
         return redirect(url_for('showDestination', tripId=tripId, destId=destId))
