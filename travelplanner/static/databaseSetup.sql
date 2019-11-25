@@ -103,8 +103,8 @@ CREATE TABLE activity (
     id INT AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     typeId int NULL,
-    cost INT,
-    notes VARCHAR(255),
+    cost INT NULL,
+    notes VARCHAR(255) NULL,
     PRIMARY KEY(id),
     FOREIGN KEY fkType(typeId)
         REFERENCES activityType(id)

@@ -4,6 +4,8 @@
 # DateField: https://stackoverflow.com/questions/26057710/datepickerwidget-with-flask-flask-admin-and-wtforms
 # Default values: https://stackoverflow.com/questions/21314068/wtforms-field-defaults-suddenly-dont-work
 # coerce-int: https://stackoverflow.com/questions/13964152/not-a-valid-choice-for-dynamic-select-field-wtforms
+# select field needs list of tuples: https://stackoverflow.com/questions/6417935/wtforms-too-many-values-to-unpack-with-selectfield
+#       http://wtforms.simplecodes.com/docs/0.6/fields.html#wtforms.fields.SelectField
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
@@ -36,10 +38,10 @@ class AddDestination(FlaskForm):
 class AddActivity(FlaskForm):
     activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)])
     activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0), Optional()])
-    activityType = IntegerField('Activity Type', widget=NumberInput(), validators=[Optional()])
+    activityType = SelectField('Activity Type', coerce=int, choices=[], validators=[Optional()])
     activityNote = StringField('Notes', validators=[Optional()])
     submit = SubmitField('Add Activity')
- 
+
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=255)])

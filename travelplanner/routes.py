@@ -255,7 +255,6 @@ def editActivity(tripId,destId,actId):
         if form.activityType.data == 'None':
             form.activityType.data = None
 
-        print(form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId)
         params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId]
         db.runQuery(query, params=params)
 
@@ -330,7 +329,12 @@ def newDestination(tripId):
 @app.route('/trip/<tripId>/<destId>/newActivity', methods=['GET', 'POST'])
 @login_required
 def newActivity(tripId, destId):
+    # create form and add choices, including blank option
     form = AddActivity()
+    query = 'SELECT id, name FROM activityType'
+    choices = list(db.runQuery(query))
+    choices.insert(0, (0, ''))
+    form.activityType.choices = choices
 
     if request.method == 'GET':
         query = "SELECT name FROM trip WHERE id = %s"
@@ -343,15 +347,26 @@ def newActivity(tripId, destId):
 
         return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
 
-    elif request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
+        # insert activity type was left blank
+        if form.activityType.data == 0:
+            form.activityType.data = None
+
+        # insert new activity
         query = "INSERT INTO activity (name, typeId, cost, notes) VALUES (%s, %s, %s, %s)"
         params = (form.activityName.data, form.activityType.data, form.activityCost.data, form.activityNote.data)
         db.runQuery(query, params=params)
 
-        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+        # get id of activity just inserted
+        query = "SELECT LAST_INSERT_ID()"
+        actId = db.runQuery(query)[0][0]
+        print(actId)
 
-    else:
-        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+        query = 'INSERT INTO destinationActivity (destinationId, activityId) VALUES (%s, %s)'
+        params = (destId, actId)
+        db.runQuery(query, params)
+
+    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
@@ -422,7 +437,7 @@ def resetDB():
     query.append("CREATE TABLE trip (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, userId INT NOT NULL, numberOfPeople INT, startDate DATE, endDate DATE, PRIMARY KEY(id), FOREIGN KEY fkUser(userId) REFERENCES user(id) ON DELETE CASCADE);")
     query.append("CREATE TABLE destination (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, tripId INT NOT NULL, arriveDate DATE, leaveDate DATE, PRIMARY KEY(id), FOREIGN KEY fkTrip(tripId) REFERENCES trip(id) ON DELETE CASCADE);")
     query.append("CREATE TABLE activityType (id int AUTO_INCREMENT, name VARCHAR(100) NOT NULL, PRIMARY KEY(id));")
-    query.append("CREATE TABLE activity (id INT AUTO_INCREMENT, name VARCHAR(100) NOT NULL, typeId int NULL, cost INT, notes VARCHAR(255), PRIMARY KEY(id), FOREIGN KEY fkType(typeId) REFERENCES activityType(id) ON DELETE SET NULL);")
+    query.append("CREATE TABLE activity (id INT AUTO_INCREMENT, name VARCHAR(100) NOT NULL, typeId int NULL, cost INT NULL, notes VARCHAR(255) NULL, PRIMARY KEY(id), FOREIGN KEY fkType(typeId) REFERENCES activityType(id) ON DELETE SET NULL);")
     query.append("CREATE TABLE destinationActivity (destinationId INT NOT NULL, activityId INT NOT NULL, PRIMARY KEY(destinationId, activityId), FOREIGN KEY fkDest(destinationId) REFERENCES destination(id) ON DELETE CASCADE, FOREIGN KEY fkAct(activityId) REFERENCES activity(id) ON DELETE CASCADE);")
 
     db.runMultipleQueries(query)
