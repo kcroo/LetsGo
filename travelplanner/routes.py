@@ -205,7 +205,7 @@ def deleteDestination(tripId, destId):
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 @login_required
 def showDestination(tripId, destId):
-    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
+    query = "SELECT a.id, a.name, at.name, a.cost, a.notes FROM activity a INNER JOIN activityType at ON a.typeId = at.id INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
     activities = db.runQuery(query)
 
     query = "SELECT name FROM activityType"
