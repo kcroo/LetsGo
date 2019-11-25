@@ -5,6 +5,13 @@
 
 {% block body %}
 <div class="container">
+    <br>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add New Trip</li>
+        </ol>
+    </nav>
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <fieldset>
