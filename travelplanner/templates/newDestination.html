@@ -5,6 +5,14 @@
 
 {% block body %}
 <div class="container">
+    <br>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showTrip', tripId=tripId) }}">{{ tripName }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add New Destination</li>
+        </ol>
+    </nav>
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <fieldset>
@@ -21,6 +29,7 @@
                 {{ form.leaveDate.label(class="form-control-label") }}
                 {{ form.leaveDate(class="form-control") }}
             </div>
+            <br>
             <div class="form-group">
                 {{ form.submit(class="form-control") }}
             </div>

@@ -304,26 +304,23 @@ def newTrip():
         return redirect(url_for('myTrips'))
 
 # make new destination
-@app.route('/newDestination', methods=['GET', 'POST'])
+@app.route('/trip/<tripId>/newDestination', methods=['GET', 'POST'])
 @login_required
-def newDestination():
+def newDestination(tripId):
     form = AddDestination()
 
     if request.method == 'GET':
-        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", form=form, username=current_user.username.capitalize())
+        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, form=form, username=current_user.username.capitalize())
 
     elif request.method == 'POST' and form.validate_on_submit():
-        query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
-        params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
+        query = "INSERT INTO destination (name, tripId, arriveDate, leaveDate) VALUES (%s, %s, %s, %s, %s)"
+        params = (form.destinationName.data, tripId, form.arriveDate.data, form.leaveDate.data)
         db.runQuery(query, params=params)
 
-        query = "SELECT LAST_INSERT_ID()"
-        id = db.runQuery(query)[0][0]
-
-        return redirect(url_for('showTrip', tripId=id))
+        return redirect(url_for('showTrip', tripId=tripId))
 
     else:
-        return redirect(url_for('showTrip'))
+        return redirect(url_for('showTrip', tripId=tripId))
 
 # make new activity
 @app.route('/newActivity', methods=['GET', 'POST'])
