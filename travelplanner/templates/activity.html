@@ -25,75 +25,60 @@
                 <th>Delete</th>
             </thead>
             <tbody>
-                {% if activities %}
-                    {% for act in activities %}
-                        <tr>
-                            <td>
-                                {{ act[1] }}
-                            </td>
-                            <td>
-                                {{ act[2] }}
-                            </td>
-                            <td>
-                                {{ act[3] }}
-                            </td>
-                            <td>
-                                {{ act[4] }}
-                            </td>
-                            <td>
-                                <a class= "btn btn-warning" href="{{ url_for('editActivity', tripId=tripId, destId=destId, actId=act[0]) }}">Edit</a>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- Delete Modal -->
-                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
+                {% for a in activities %}
+                    <tr>
+                        <td>
+                            {{ a[1] }}
+                        </td>
+                        <td>
+                            {% if a[2] %}
+                                {{ a[2] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if a[3] %}
+                                {{ a[3] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if a[4] %}
+                                {{ a[4] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class= "btn btn-warning" href="{{ url_for('editActivity', tripId=tripId, destId=destId, actId=a[0]) }}">Edit</a>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ a[0] }}">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal{{ a[0] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
                                     <h5 class="modal-title" id="deleteModelLabel">Confirm Delete</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to delete this activity?
-                                    </div>
-                                    <div class="modal-footer">
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this activity?
+                                </div>
+                                <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <form action="{{ url_for('deleteActivity', tripId=tripId, destId=destId, actId=act[0]) }}" method="post">
+                                    <form action="{{ url_for('deleteActivity', tripId=tripId, destId=destId, actId=a[0]) }}" method="post">
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
+                    </div>
+                {% endfor %}
             </tbody>
         </table>
-
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <fieldset>
-                <legend>Add New Activity</legend>
-                <div class="form-group required">
-                    {{ form.activityName.label(class="form-control-label") }}
-                    {{ form.activityName(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.activityCost.label(class="form-control-label") }}
-                    {{ form.activityCost(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.activityType.label(class="form-control-label") }}
-                    {{ form.activityType(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.submit(class="form-control") }}
-                </div>
-            </fieldset>
-        </form>
+        <div align="left">
+            <a class= "btn btn-success" href="{{ url_for('newActivity', tripId=tripId, destId=destId) }}">Add New Activity</a>
+        </div>
     </div>
 {% endblock %}

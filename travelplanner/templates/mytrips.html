@@ -7,6 +7,7 @@
 <div class="container">
     <!-- lists trip names, with edit/delete buttons -->
     {% if trips %}
+        <br>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active" aria-current="page">My Trips</li>
@@ -54,11 +55,11 @@
                             <a class= "btn btn-warning" href="{{ url_for('editTrip', tripId=trip[0]) }}">Edit</a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ trip[0] }}">Delete</button>
                         </td>
                     </tr>
                     <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ trip[0] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -82,7 +83,10 @@
                 {% endfor %}
             </tbody>
         </table>
-    {% endif %}    
+    {% endif %}
+    <div align="left">
+        <a class= "btn btn-success" href="{{ url_for('newTrip') }}">Add New Trip</a>
+    </div>    
 
 </div>
 {% endblock %}

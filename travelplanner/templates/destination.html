@@ -46,11 +46,11 @@
                             <a class= "btn btn-warning" href="{{ url_for('editDestination', tripId=tripId, destId=d[0]) }}">Edit</a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ d[0] }}">Delete</button>
                         </td>
                     </tr>
                     <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ d[0] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -74,27 +74,8 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <fieldset>
-                <legend>Add Destination</legend>
-                <div class="form-group required">
-                    {{ form.destinationName.label(class="form-control-label") }}
-                    {{ form.destinationName(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.arriveDate.label(class="form-control-label") }}
-                    {{ form.arriveDate(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.leaveDate.label(class="form-control-label") }}
-                    {{ form.leaveDate(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.submit(class="form-control") }}
-                </div>
-            </fieldset>
-        </form>
+        <div align="left">
+            <a class= "btn btn-success" href="{{ url_for('newDestination', tripId=tripId) }}">Add New Destination</a>
+        </div>
     </div>
 {% endblock %}
