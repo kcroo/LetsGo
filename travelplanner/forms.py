@@ -42,6 +42,10 @@ class AddActivity(FlaskForm):
     activityNote = StringField('Notes', validators=[Optional()])
     submit = SubmitField('Add Activity')
 
+class AddActivityType(FlaskForm):
+    activityType = StringField('Activity Type', validators=[DataRequired(), Length(min=1, max=100)], render_kw={"Placeholder": "e.g. Rock Climbing or Scuba Diving"})
+    submit = SubmitField('Add Activity Type')
+
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=255)])

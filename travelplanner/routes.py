@@ -24,7 +24,7 @@ from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mysqldb import MySQL
 from travelplanner import app, db, bcrypt
-from .forms import NewTrip, AddDestination, AddActivity, Login, NewUser, SwitchUser
+from .forms import NewTrip, AddDestination, AddActivity, AddActivityType, Login, NewUser, SwitchUser
 from .login import User, loadUser
 
 # index route
@@ -368,6 +368,31 @@ def newActivity(tripId, destId):
         query = 'INSERT INTO destinationActivity (destinationId, activityId) VALUES (%s, %s)'
         params = (destId, actId)
         db.runQuery(query, params)
+
+    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+
+# make new activity type
+@app.route('/trip/<tripId>/<destId>/newActivityType', methods=['GET', 'POST'])
+@login_required
+def newActivityType(tripId, destId):
+    form = AddActivityType()
+
+    if request.method == 'GET':
+        query = "SELECT name FROM trip WHERE id = %s"
+        params = (tripId,)
+        tripName = db.runQuery(query, params)[0][0]
+
+        query = "SELECT name FROM destination WHERE id = %s"
+        params = (destId,)
+        destName = db.runQuery(query, params)[0][0]
+
+        return render_template("newActivityType.html", title="- Add Activity Type", legend="Add Activity Type", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
+
+    if form.validate_on_submit():
+        # insert new activity type
+        query = "INSERT INTO activityType (name) VALUES (%s)"
+        params = (form.activityType.data,)
+        db.runQuery(query, params=params)
 
     return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
