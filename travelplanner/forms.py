@@ -46,6 +46,17 @@ class AddActivityType(FlaskForm):
     activityType = StringField('Activity Type', validators=[DataRequired(), Length(min=1, max=100)], render_kw={"Placeholder": "e.g. Rock Climbing or Scuba Diving"})
     submit = SubmitField('Add Activity Type')
 
+    # validate that activity type doesn't already exist
+    def validate_activityType(self, activityType):
+        query = 'SELECT name FROM activityType WHERE name = %s'
+        params = (activityType.data,)
+        result = db.runQuery(query, params)
+        print(activityType.data)
+        print(result)
+        if result:
+            print('raising error')
+            raise ValidationError('Activity Type already exists. Please enter another.')
+
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=255)])

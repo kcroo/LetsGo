@@ -72,7 +72,7 @@ INSERT INTO destination (name, tripId) VALUES('Florence', 3);
 -- activityType table -- 
 CREATE TABLE activityType (
     id int AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(100) UNIQUE NOT NULL,
     PRIMARY KEY(id)
 );
 
