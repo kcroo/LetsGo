@@ -17,13 +17,13 @@ from datetime import date, timedelta
 from travelplanner import db
 
 class NewTrip(FlaskForm):
-    tomorrow = date.today() + timedelta(days=1)
-    nextWeek = tomorrow + timedelta(weeks=1)
+    startDefault = date.today() + timedelta(days=30)
+    endDefault = startDefault + timedelta(weeks=2)
 
     tripName = StringField('Trip Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. California Roadtrip or Backpacking Europe"})
     numberOfPeople = IntegerField('Number of People', default=1, widget=NumberInput(), validators=[NumberRange(min=1, max=100), Optional()])
-    startDate = DateField('Start Date', default=tomorrow, validators=[Optional()])
-    endDate = DateField('End Date', default=nextWeek, validators=[Optional()])
+    startDate = DateField('Start Date', default=startDefault, validators=[Optional()])
+    endDate = DateField('End Date', default=endDefault, validators=[Optional()])
     submit = SubmitField('Create Trip')
 
 class AddDestination(FlaskForm):
