@@ -20,7 +20,7 @@ class NewTrip(FlaskForm):
     tomorrow = date.today() + timedelta(days=1)
     nextWeek = tomorrow + timedelta(weeks=1)
 
-    tripName = StringField('Trip Name', validators=[DataRequired(), Length(min=1, max=255)])
+    tripName = StringField('Trip Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. California Roadtrip or Backpacking Europe"})
     numberOfPeople = IntegerField('Number of People', default=1, widget=NumberInput(), validators=[NumberRange(min=1, max=100), Optional()])
     startDate = DateField('Start Date', default=tomorrow, validators=[Optional()])
     endDate = DateField('End Date', default=nextWeek, validators=[Optional()])
@@ -30,13 +30,13 @@ class AddDestination(FlaskForm):
     tomorrow = date.today() + timedelta(days=1)
     nextWeek = tomorrow + timedelta(weeks=1)
 
-    destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)])
+    destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. Yosemite National Park or Paris"})
     arriveDate = DateField('Arrive Date', default=tomorrow, validators=[Optional()])
     leaveDate = DateField('Leave Date', default=nextWeek, validators=[Optional()])
     submit = SubmitField('Add Destination')
 
 class AddActivity(FlaskForm):
-    activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)])
+    activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)], render_kw={"Placeholder": "e.g. Half Dome Trail or Eiffel Tower"})
     activityCost = IntegerField('Cost', widget=NumberInput(), validators=[NumberRange(min=0), Optional()])
     activityType = SelectField('Activity Type', coerce=int, choices=[], validators=[Optional()])
     activityNote = StringField('Notes', validators=[Optional()])
