@@ -26,6 +26,10 @@ class NewTrip(FlaskForm):
     endDate = DateField('End Date', default=endDefault, validators=[Optional()])
     submit = SubmitField('Create Trip')
 
+    def validate_endDate(self, endDate):
+        if endDate.data < self.startDate.data:
+            raise ValidationError('End Date cannot be before Start Date.')
+
 class AddDestination(FlaskForm):
     tomorrow = date.today() + timedelta(days=1)
     nextWeek = tomorrow + timedelta(weeks=1)

@@ -289,10 +289,7 @@ def deleteActivity(tripId, destId, actId):
 def newTrip():
     form = NewTrip()
 
-    if request.method == 'GET':
-        return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form, username=current_user.username.capitalize())
-
-    elif request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
         params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
         db.runQuery(query, params=params)
@@ -302,8 +299,7 @@ def newTrip():
 
         return redirect(url_for('myTrips', tripId=id))
 
-    else:
-        return redirect(url_for('myTrips'))
+    return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form, username=current_user.username.capitalize())
 
 # make new destination
 @app.route('/trip/<tripId>/newDestination', methods=['GET', 'POST'])
