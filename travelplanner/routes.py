@@ -24,7 +24,7 @@ from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mysqldb import MySQL
 from travelplanner import app, db, bcrypt
-from .forms import NewTrip, AddDestination, AddActivity, Login, NewUser, SwitchUser
+from .forms import NewTrip, AddDestination, AddActivity, AddActivityType, Login, NewUser, SwitchUser
 from .login import User, loadUser
 
 # index route
@@ -371,6 +371,30 @@ def newActivity(tripId, destId):
 
     return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
+# make new activity type
+@app.route('/trip/<tripId>/<destId>/newActivityType', methods=['GET', 'POST'])
+@login_required
+def newActivityType(tripId, destId):
+    form = AddActivityType()
+
+    query = "SELECT name FROM trip WHERE id = %s"
+    params = (tripId,)
+    tripName = db.runQuery(query, params)[0][0]
+
+    query = "SELECT name FROM destination WHERE id = %s"
+    params = (destId,)
+    destName = db.runQuery(query, params)[0][0]
+
+    if form.validate_on_submit():
+        # insert new activity type
+        query = "INSERT INTO activityType (name) VALUES (%s)"
+        params = (form.activityType.data,)
+        db.runQuery(query, params=params)
+        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+    
+    else:
+        return render_template("newActivityType.html", title="- Add Activity Type", legend="Add Activity Type", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
+
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
 def newUser():
@@ -439,7 +463,7 @@ def resetDB():
     query.append("CREATE TABLE user (id INT AUTO_INCREMENT, username VARCHAR(20) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, pw CHAR(60) NOT NULL, PRIMARY KEY(id));")
     query.append("CREATE TABLE trip (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, userId INT NOT NULL, numberOfPeople INT, startDate DATE, endDate DATE, PRIMARY KEY(id), FOREIGN KEY fkUser(userId) REFERENCES user(id) ON DELETE CASCADE);")
     query.append("CREATE TABLE destination (id INT AUTO_INCREMENT, name VARCHAR(255) NOT NULL, tripId INT NOT NULL, arriveDate DATE, leaveDate DATE, PRIMARY KEY(id), FOREIGN KEY fkTrip(tripId) REFERENCES trip(id) ON DELETE CASCADE);")
-    query.append("CREATE TABLE activityType (id int AUTO_INCREMENT, name VARCHAR(100) NOT NULL, PRIMARY KEY(id));")
+    query.append("CREATE TABLE activityType (id int AUTO_INCREMENT, name VARCHAR(100) UNIQUE NOT NULL, PRIMARY KEY(id));")
     query.append("CREATE TABLE activity (id INT AUTO_INCREMENT, name VARCHAR(100) NOT NULL, typeId int NULL, cost INT NULL, notes VARCHAR(255) NULL, PRIMARY KEY(id), FOREIGN KEY fkType(typeId) REFERENCES activityType(id) ON DELETE SET NULL);")
     query.append("CREATE TABLE destinationActivity (destinationId INT NOT NULL, activityId INT NOT NULL, PRIMARY KEY(destinationId, activityId), FOREIGN KEY fkDest(destinationId) REFERENCES destination(id) ON DELETE CASCADE, FOREIGN KEY fkAct(activityId) REFERENCES activity(id) ON DELETE CASCADE);")
 
