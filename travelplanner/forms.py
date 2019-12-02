@@ -8,7 +8,7 @@
 #       http://wtforms.simplecodes.com/docs/0.6/fields.html#wtforms.fields.SelectField
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField, HiddenField
 from wtforms.widgets.html5 import NumberInput
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf, Optional, Email
@@ -31,12 +31,9 @@ class NewTrip(FlaskForm):
             raise ValidationError('End Date cannot be before Start Date.')
 
 class AddDestination(FlaskForm):
-    tomorrow = date.today() + timedelta(days=1)
-    nextWeek = tomorrow + timedelta(weeks=1)
-
     destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. Yosemite National Park or Paris"})
-    arriveDate = DateField('Arrive Date', default=tomorrow, validators=[Optional()])
-    leaveDate = DateField('Leave Date', default=nextWeek, validators=[Optional()])
+    arriveDate = DateField('Arrive Date', validators=[Optional()])
+    leaveDate = DateField('Leave Date', validators=[Optional()])
     submit = SubmitField('Add Destination')
 
 class AddActivity(FlaskForm):
