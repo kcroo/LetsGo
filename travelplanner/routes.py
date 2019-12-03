@@ -129,18 +129,20 @@ def editTrip(tripId):
 @app.route('/mytrips/<tripId>/delete', methods=['POST'])
 @login_required
 def deleteTrip(tripId):
-    query = "DELETE FROM trip WHERE id = " + str(tripId)
-    db.runQuery(query)
+    query = "DELETE FROM trip WHERE id = %s"
+    params = (tripId,)
+    db.runQuery(query, params)
     return redirect(url_for('myTrips'))
 
 # shows individual trip --> show destination(s) for the trip
 @app.route('/trip/<tripId>', methods=['GET', 'POST'])
 @login_required
 def showTrip(tripId):
-    query = "SELECT * FROM destination WHERE tripId = '" + tripId + "'"
-    destinations = db.runQuery(query) 
-    query = "SELECT name FROM trip WHERE id = '" + tripId + "'"
-    tripName = db.runQuery(query)[0][0]
+    query = "SELECT * FROM destination WHERE tripId = %s"
+    params = (tripId,)
+    destinations = db.runQuery(query, params) 
+    query = "SELECT name FROM trip WHERE id = %s"
+    tripName = db.runQuery(query, params)[0][0]
 
     form = AddDestination()
     return render_template("destination.html", title="- My Trips", tripId=tripId, tripName=tripName, destinations=destinations, form=form, username=current_user.username.capitalize())
@@ -152,9 +154,9 @@ def editDestination(tripId,destId):
     form = AddDestination()
 
     if form.validate_on_submit():
-        query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + destId 
-        params = [form.destinationName.data, form.arriveDate.data, form.leaveDate.data]
-        db.runQuery(query, params=params)
+        query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = %s"
+        params = (form.destinationName.data, form.arriveDate.data, form.leaveDate.data, destId)
+        db.runQuery(query, params)
         return redirect(url_for('showTrip', tripId=tripId))
 
     # fill form with that destination's information; also send trip start and end dates for validation
@@ -206,19 +208,15 @@ def deleteDestination(tripId, destId):
 @app.route('/trip/<tripId>/<destId>', methods=['GET', 'POST'])
 @login_required
 def showDestination(tripId, destId):
-    query = "SELECT a.id, a.name, at.name, a.cost, a.notes FROM activity a INNER JOIN activityType at ON a.typeId = at.id INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = " + destId
-    activities = db.runQuery(query)
+    query = "SELECT a.id, a.name, at.name, a.cost, a.notes FROM activity a INNER JOIN activityType at ON a.typeId = at.id INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = %s"
+    params = (destId,)
+    activities = db.runQuery(query, params)
 
-    query = "SELECT name FROM activityType"
-    choices = db.runQuery(query)[0]
-
-    query = "SELECT name FROM trip WHERE id = " + tripId
-    tripName = db.runQuery(query)[0][0]
-
-    query = "SELECT name FROM destination WHERE id = " + destId
-    destName = db.runQuery(query)[0][0]
+    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
+    params = (tripId,)
+    names = db.runQuery(query, params)[0]
     
-    return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=tripName, destName=destName, activities=activities, username=current_user.username.capitalize())
+    return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=names[0], destName=names[1], activities=activities, username=current_user.username.capitalize())
 
 # edit activity
 @app.route('/trip/<tripId>/<destId>/<actId>/editA', methods=['GET', 'POST'])
