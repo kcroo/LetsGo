@@ -102,28 +102,28 @@ def myTrips():
 @login_required
 def editTrip(tripId):
     form = NewTrip()
-
-    if request.method == 'GET':
-        query = "SELECT name, userId, numberOfPeople, startDate, endDate FROM trip WHERE id = " + str(tripId)
-        result = db.runQuery(query)
-
-        form.tripName.data = result[0][0]
-        if result[0][2]:
-            form.numberOfPeople.data = result[0][2]
-        if result[0][3]:
-            form.startDate.data = result[0][3]
-        if result[0][4]:
-            form.endDate.data = result[0][4]
-        form.submit.label.text = 'Edit Trip'
-        
-        return render_template("editTrip.html", title="- Edit Trip", legend="Edit Trip", form=form, username=current_user.username.capitalize())
-
-    elif form.validate_on_submit():
-        query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = " + tripId 
-        params = [form.tripName.data, form.numberOfPeople.data, form.startDate.data, form.endDate.data]
+    
+    if form.validate_on_submit():
+        query = "UPDATE trip SET name=%s, numberOfPeople=%s, startDate=%s, endDate=%s WHERE id = %s"
+        params = (form.tripName.data, form.numberOfPeople.data, form.startDate.data, form.endDate.data, tripId)
         db.runQuery(query, params=params)
 
-    return redirect(url_for('myTrips'))
+        return redirect(url_for('myTrips'))
+
+    query = "SELECT name, userId, numberOfPeople, startDate, endDate FROM trip WHERE id = %s"
+    params = (tripId,)
+    tripData = db.runQuery(query, params)[0]
+
+    form.tripName.data = tripData[0]
+    if tripData[2]:
+        form.numberOfPeople.data = tripData[2]
+    if tripData[3]:
+        form.startDate.data = tripData[3]
+    if tripData[4]:
+        form.endDate.data = tripData[4]
+    form.submit.label.text = 'Edit Trip'
+    
+    return render_template("newTrip.html", title="- Edit Trip", legend="Edit Trip", form=form, username=current_user.username.capitalize())
 
 # delete trip 
 @app.route('/mytrips/<tripId>/delete', methods=['POST'])
@@ -291,14 +291,14 @@ def newTrip():
     if form.validate_on_submit():
         query = "INSERT INTO trip (name, userId, numberOfPeople, startDate, endDate) VALUES (%s, %s, %s, %s, %s)"
         params = (form.tripName.data, current_user.id, form.numberOfPeople.data, form.startDate.data, form.endDate.data)
-        db.runQuery(query, params=params)
+        db.runQuery(query, params)
 
         query = "SELECT LAST_INSERT_ID()"
-        id = db.runQuery(query)[0][0]
+        tripId = db.runQuery(query)[0][0]
 
-        return redirect(url_for('myTrips', tripId=id))
+        return redirect(url_for('myTrips', tripId=tripId))
 
-    return render_template("newtrip.html", title="- New Trip", legend="New Trip", form=form, username=current_user.username.capitalize())
+    return render_template("newTrip.html", title="- New Trip", legend="New Trip", form=form, username=current_user.username.capitalize())
 
 # make new destination
 @app.route('/trip/<tripId>/newDestination', methods=['GET', 'POST'])
