@@ -10,6 +10,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField, HiddenField
 from wtforms.widgets.html5 import NumberInput
+from wtforms.widgets import HiddenInput
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, AnyOf, Optional, Email
 from datetime import date, timedelta
@@ -32,8 +33,8 @@ class NewTrip(FlaskForm):
 
 class AddDestination(FlaskForm):
     tripId = HiddenField()
-    tripStart = DateField()
-    tripEnd = DateField()
+    tripStart = DateField(widget=HiddenInput())
+    tripEnd = DateField(widget=HiddenInput())
 
     destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. Yosemite National Park or Paris"})
     arriveDate = DateField('Arrive Date', validators=[Optional()])
@@ -43,15 +44,15 @@ class AddDestination(FlaskForm):
     # makes sure destination dates are between trip dates; and that arrival date is before leave date
     def validate_arriveDate(self, arriveDate):
         if self.arriveDate.data:
-            if self.tripStart.data > self.arriveDate.data:
-                raise ValidationError('Error--cannot arrive to destination before trip start date.')
-            elif self.arriveDate.data > self.leaveDate.data:
-                raise ValidationError('Error--arrive date cannot be after leave date.')
+            if self.tripStart.data and self.tripStart.data > self.arriveDate.data:
+                raise ValidationError(f'Error: cannot arrive to destination before trip start date ({self.tripStart.data}).')
+            if self.leaveDate.data and self.arriveDate.data > self.leaveDate.data:
+                raise ValidationError('Error: arrive date cannot be after leave date.')
 
     def validate_leaveDate(self, leaveDate):
-        if self.leaveDate.data:
+        if self.leaveDate.data and self.tripEnd.data:
             if self.tripEnd.data < self.leaveDate.data:
-                raise ValidationError('Error--cannot leave destination after trip end date.')
+                raise ValidationError(f'Error: cannot leave destination after trip end date ({self.tripEnd.data}).')
 
 class AddActivity(FlaskForm):
     activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)], render_kw={"Placeholder": "e.g. Half Dome Trail or Eiffel Tower"})

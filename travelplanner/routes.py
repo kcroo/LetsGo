@@ -151,30 +151,32 @@ def showTrip(tripId):
 def editDestination(tripId,destId):
     form = AddDestination()
 
-    if request.method == 'GET':
-        query = "SELECT name, tripId, arriveDate, leaveDate FROM destination WHERE id = %s"
-        params = (destId,)
-        result = db.runQuery(query, params)
-
-        query = "SELECT name FROM trip WHERE id = %s"
-        params = (tripId,)
-        tripName = db.runQuery(query, params)[0][0]
-
-        form.destinationName.data = result[0][0]
-        if result[0][2]:
-            form.arriveDate.data = result[0][2]
-        if result[0][3]:
-            form.leaveDate.data = result[0][3]
-        form.submit.label.text = 'Edit Destination'
-        
-        return render_template("editDestination.html", title="- Edit Destination", legend="Edit Destination", tripId=tripId, tripName=tripName, destId=destId, form=form,  username=current_user.username.capitalize())
-
-    elif form.validate_on_submit():
+    if form.validate_on_submit():
         query = "UPDATE destination SET name=%s, arriveDate=%s, leaveDate=%s WHERE id = " + destId 
         params = [form.destinationName.data, form.arriveDate.data, form.leaveDate.data]
         db.runQuery(query, params=params)
+        return redirect(url_for('showTrip', tripId=tripId))
 
-    return redirect(url_for('showTrip', tripId=tripId))
+    # fill form with that destination's information; also send trip start and end dates for validation
+    query = "SELECT t.name, t.startDate, t.endDate, d.name, d.arriveDate, d.leaveDate FROM destination d INNER JOIN trip t ON d.tripId = t.id WHERE d.id = %s"
+    params = (destId,)
+    result = db.runQuery(query, params)[0]
+
+    tripName = result[0]
+    if result[1]:
+        form.tripStart.data = result[1]
+        print(f'form trip start set to {form.tripStart.data}')
+    if result[2]:
+        form.tripEnd.data = result[2]
+        print(f'form trip end set to {form.tripEnd.data}')
+    form.destinationName.data = result[3]
+    if result[4]:
+        form.arriveDate.data = result[4]
+    if result[5]:
+        form.leaveDate.data = result[5]
+    form.submit.label.text = 'Edit Destination'
+        
+    return render_template("newDestination.html", title="- Edit Destination", legend="Edit Destination", tripId=tripId, tripName=tripName, form=form,  username=current_user.username.capitalize())
 
 # delete destination 
 @app.route('/mytrips/<tripId>/<destId>/delete', methods=['POST'])
