@@ -11,7 +11,7 @@
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('myTrips') }}">My Trips</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showTrip', tripId=tripId) }}">{{ tripName }}</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ url_for('showDestination', tripId=tripId, destId=destId) }}">{{ destName }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Add New Activity</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ legend }}</li>
         </ol>
     </nav>
     <form action="" method="post">
@@ -24,7 +24,16 @@
             </div>
             <div class="form-group">
                 {{ form.activityCost.label(class="form-control-label") }}
-                {{ form.activityCost(class="form-control") }}
+                {% if form.activityCost.errors %}
+                    {{ form.activityCost(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.activityCost.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.activityCost(class="form-control") }}
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.activityType.label(class="form-control-label") }}

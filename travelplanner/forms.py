@@ -61,6 +61,11 @@ class AddActivity(FlaskForm):
     activityNote = StringField('Notes', validators=[Optional()])
     submit = SubmitField('Add Activity')
 
+    # make sure cost is not negative
+    def validate_activityCost(self, activityCost):
+        if activityCost and activityCost.data < 0:
+            raise ValidationError('Cost cannot be negative.')
+
 class NewUser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=255)])

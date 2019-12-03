@@ -232,28 +232,7 @@ def editActivity(tripId,destId,actId):
     choices.insert(0, (0, ''))
     form.activityType.choices = choices
 
-    if request.method == 'GET':
-        query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = " + str(actId)
-        result = db.runQuery(query)
-
-        query = "SELECT name FROM trip WHERE id = " + str(tripId)
-        tripName = db.runQuery(query)[0][0]
-
-        query = "SELECT name FROM destination WHERE id = " + str(destId)
-        destName = db.runQuery(query)[0][0]
-
-        form.activityName.data = result[0][1]
-        if result[0][2]:
-            form.activityType.data = result[0][2]
-        if result[0][3]:
-            form.activityCost.data = result[0][3]
-        if result[0][4]:
-            form.activityNote.data = result[0][4]
-        form.submit.label.text = 'Edit Activity'
-        
-        return render_template("editActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
-
-    elif form.validate_on_submit():
+    if form.validate_on_submit():
         # insert activity type was left blank
         if form.activityType.data == 0:
             form.activityType.data = None
@@ -263,7 +242,29 @@ def editActivity(tripId,destId,actId):
         params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId]
         db.runQuery(query, params=params)
 
-    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+        return redirect(url_for('showDestination', tripId=tripId, destId=destId))
+
+    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = " + str(actId)
+    result = db.runQuery(query)
+
+    query = "SELECT name FROM trip WHERE id = " + str(tripId)
+    tripName = db.runQuery(query)[0][0]
+
+    query = "SELECT name FROM destination WHERE id = " + str(destId)
+    destName = db.runQuery(query)[0][0]
+
+    form.activityName.data = result[0][1]
+    if result[0][2]:
+        form.activityType.data = result[0][2]
+    if result[0][3]:
+        form.activityCost.data = result[0][3]
+    if result[0][4]:
+        form.activityNote.data = result[0][4]
+    form.submit.label.text = 'Edit Activity'
+    
+    return render_template("newActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
+
+    
 
 # delete activity 
 @app.route('/mytrips/<tripId>/<destId>/<actId>/delete', methods=['POST'])
@@ -339,17 +340,6 @@ def newActivity(tripId, destId):
     choices.insert(0, (0, ''))
     form.activityType.choices = choices
 
-    if request.method == 'GET':
-        query = "SELECT name FROM trip WHERE id = %s"
-        params = (tripId,)
-        tripName = db.runQuery(query, params)[0][0]
-
-        query = "SELECT name FROM destination WHERE id = %s"
-        params = (destId,)
-        destName = db.runQuery(query, params)[0][0]
-
-        return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
-
     if form.validate_on_submit():
         # insert activity type was left blank
         if form.activityType.data == 0:
@@ -368,6 +358,20 @@ def newActivity(tripId, destId):
         query = 'INSERT INTO destinationActivity (destinationId, activityId) VALUES (%s, %s)'
         params = (destId, actId)
         db.runQuery(query, params)
+
+        return redirect(url_for('showDestination', tripId=tripId, destId=destId)) 
+    
+    query = "SELECT name FROM trip WHERE id = %s"
+    params = (tripId,)
+    tripName = db.runQuery(query, params)[0][0]
+
+    query = "SELECT name FROM destination WHERE id = %s"
+    params = (destId,)
+    destName = db.runQuery(query, params)[0][0]
+
+    return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
+
+
 
     return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
