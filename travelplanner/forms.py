@@ -31,10 +31,27 @@ class NewTrip(FlaskForm):
             raise ValidationError('End Date cannot be before Start Date.')
 
 class AddDestination(FlaskForm):
+    tripId = HiddenField()
+    tripStart = DateField()
+    tripEnd = DateField()
+
     destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. Yosemite National Park or Paris"})
     arriveDate = DateField('Arrive Date', validators=[Optional()])
     leaveDate = DateField('Leave Date', validators=[Optional()])
     submit = SubmitField('Add Destination')
+
+    # makes sure destination dates are between trip dates; and that arrival date is before leave date
+    def validate_arriveDate(self, arriveDate):
+        if self.arriveDate.data:
+            if self.tripStart.data > self.arriveDate.data:
+                raise ValidationError('Error--cannot arrive to destination before trip start date.')
+            elif self.arriveDate.data > self.leaveDate.data:
+                raise ValidationError('Error--arrive date cannot be after leave date.')
+
+    def validate_leaveDate(self, leaveDate):
+        if self.leaveDate.data:
+            if self.tripEnd.data < self.leaveDate.data:
+                raise ValidationError('Error--cannot leave destination after trip end date.')
 
 class AddActivity(FlaskForm):
     activityName = StringField('Activity Name', validators=[DataRequired(), Length(min=1, max=100)], render_kw={"Placeholder": "e.g. Half Dome Trail or Eiffel Tower"})

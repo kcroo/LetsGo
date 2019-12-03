@@ -305,27 +305,26 @@ def newTrip():
 @app.route('/trip/<tripId>/newDestination', methods=['GET', 'POST'])
 @login_required
 def newDestination(tripId):
+    # pre-fill form with appropriate dates for trip
     query = "SELECT startDate, endDate FROM trip WHERE id = %s"
     params = (tripId,)
     dates = db.runQuery(query, params)
-    print(dates)
     tripStart = dates[0][0]
     tripEnd = dates[0][1]
-    form = AddDestination(arriveDate=tripStart, leaveDate=tripEnd)
+    form = AddDestination(tripId=tripId, tripStart=tripStart, tripEnd=tripEnd, arriveDate=tripStart, leaveDate=tripEnd)
 
-    if request.method == 'GET':
-        query = "SELECT name FROM trip WHERE id = %s"
-        params = (tripId,)
-        tripName = db.runQuery(query, params)[0][0]
-
-        return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, tripName=tripName, form=form, username=current_user.username.capitalize())
-
-    elif request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         query = "INSERT INTO destination (name, tripId, arriveDate, leaveDate) VALUES (%s, %s, %s, %s)"
         params = (form.destinationName.data, tripId, form.arriveDate.data, form.leaveDate.data)
         db.runQuery(query, params)
 
-    return redirect(url_for('showTrip', tripId=tripId))
+        return redirect(url_for('showTrip', tripId=tripId))
+    
+    query = "SELECT name FROM trip WHERE id = %s"
+    params = (tripId,)
+    tripName = db.runQuery(query, params)[0][0]
+
+    return render_template("newDestination.html", title="- Add Destination", legend="Add Destination", tripId=tripId, tripName=tripName, form=form, username=current_user.username.capitalize())
 
 # make new activity
 @app.route('/trip/<tripId>/<destId>/newActivity', methods=['GET', 'POST'])
