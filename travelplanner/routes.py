@@ -238,30 +238,29 @@ def editActivity(tripId,destId,actId):
 
         query = "UPDATE activity SET name=%s, cost=%s, typeId=%s, notes=%s WHERE id = %s"
 
-        params = [form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId]
+        params = (form.activityName.data, form.activityCost.data, form.activityType.data, form.activityNote.data, actId)
         db.runQuery(query, params=params)
 
         return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
-    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = " + str(actId)
-    result = db.runQuery(query)
+    query = "SELECT a.id, a.name, a.typeId, a.cost, a.notes FROM activity a INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.activityId = %s"
+    params = (actId,)
+    activityData = db.runQuery(query, params)[0]
 
-    query = "SELECT name FROM trip WHERE id = " + str(tripId)
-    tripName = db.runQuery(query)[0][0]
+    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
+    params = (tripId,)
+    names = db.runQuery(query, params)[0]
 
-    query = "SELECT name FROM destination WHERE id = " + str(destId)
-    destName = db.runQuery(query)[0][0]
-
-    form.activityName.data = result[0][1]
-    if result[0][2]:
-        form.activityType.data = result[0][2]
-    if result[0][3]:
-        form.activityCost.data = result[0][3]
-    if result[0][4]:
-        form.activityNote.data = result[0][4]
+    form.activityName.data = activityData[1]
+    if activityData[2]:
+        form.activityType.data = activityData[2]
+    if activityData[3]:
+        form.activityCost.data = activityData[3]
+    if activityData[4]:
+        form.activityNote.data = activityData[4]
     form.submit.label.text = 'Edit Activity'
     
-    return render_template("newActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
+    return render_template("newActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=names[0], destId=destId, destName=names[1], actId=actId, form=form, username=current_user.username.capitalize())
 
 # delete activity 
 @app.route('/mytrips/<tripId>/<destId>/<actId>/delete', methods=['POST'])
@@ -358,15 +357,11 @@ def newActivity(tripId, destId):
 
         return redirect(url_for('showDestination', tripId=tripId, destId=destId)) 
     
-    query = "SELECT name FROM trip WHERE id = %s"
+    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
     params = (tripId,)
-    tripName = db.runQuery(query, params)[0][0]
+    names = db.runQuery(query, params)[0]
 
-    query = "SELECT name FROM destination WHERE id = %s"
-    params = (destId,)
-    destName = db.runQuery(query, params)[0][0]
-
-    return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
+    return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=names[0], destName=names[1], form=form, username=current_user.username.capitalize())
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
