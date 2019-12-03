@@ -358,13 +358,9 @@ def newActivity(tripId, destId):
 def newActivityType(tripId, destId):
     form = AddActivityType()
 
-    query = "SELECT name FROM trip WHERE id = %s"
+    query = "SELECT t.name , d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
     params = (tripId,)
-    tripName = db.runQuery(query, params)[0][0]
-
-    query = "SELECT name FROM destination WHERE id = %s"
-    params = (destId,)
-    destName = db.runQuery(query, params)[0][0]
+    names = db.runQuery(query, params)[0]
 
     if form.validate_on_submit():
         # insert new activity type
@@ -374,7 +370,7 @@ def newActivityType(tripId, destId):
         return redirect(url_for('showDestination', tripId=tripId, destId=destId))
     
     else:
-        return render_template("newActivityType.html", title="- Add Activity Type", legend="Add Activity Type", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
+        return render_template("newActivityType.html", title="- Add Activity Type", legend="Add Activity Type", tripId=tripId, destId=destId, tripName=names[0], destName=names[1], form=form, username=current_user.username.capitalize())
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
