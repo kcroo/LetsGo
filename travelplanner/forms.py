@@ -33,8 +33,8 @@ class NewTrip(FlaskForm):
 
 class AddDestination(FlaskForm):
     tripId = HiddenField()
-    tripStart = DateField(widget=HiddenInput())
-    tripEnd = DateField(widget=HiddenInput())
+    tripStart = DateField(widget=HiddenInput(), validators=[Optional()])
+    tripEnd = DateField(widget=HiddenInput(), validators=[Optional()])
 
     destinationName = StringField('Destination Name', validators=[DataRequired(), Length(min=1, max=255)], render_kw={"Placeholder": "e.g. Yosemite National Park or Paris"})
     arriveDate = DateField('Arrive Date', validators=[Optional()])
