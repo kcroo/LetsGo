@@ -209,8 +209,8 @@ def showDestination(tripId, destId):
     params = (destId,)
     activities = db.runQuery(query, params)
 
-    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
-    params = (tripId,)
+    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE d.id = %s"
+    params = (destId,)
     names = db.runQuery(query, params)[0]
     
     return render_template("activity.html", title="- ", tripId=tripId, destId=destId, tripName=names[0], destName=names[1], activities=activities, username=current_user.username.capitalize())
@@ -346,8 +346,8 @@ def newActivity(tripId, destId):
 
         return redirect(url_for('showDestination', tripId=tripId, destId=destId)) 
     
-    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE t.id = %s"
-    params = (tripId,)
+    query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE d.id = %s"
+    params = (destId,)
     names = db.runQuery(query, params)[0]
 
     return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=names[0], destName=names[1], form=form, username=current_user.username.capitalize())
