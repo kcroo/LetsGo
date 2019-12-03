@@ -200,7 +200,6 @@ def deleteDestination(tripId, destId):
             query = "DELETE FROM activity WHERE id = %s"
             db.runQuery(query, params)
     
-
     return redirect(url_for('showTrip', tripId=tripId))
 
 # show activity --> shows individual destination and its activities
@@ -263,8 +262,6 @@ def editActivity(tripId,destId,actId):
     form.submit.label.text = 'Edit Activity'
     
     return render_template("newActivity.html", title="- Edit Activity", legend="Edit Activity", tripId=tripId, tripName=tripName, destId=destId, destName=destName, actId=actId, activities=result, form=form, username=current_user.username.capitalize())
-
-    
 
 # delete activity 
 @app.route('/mytrips/<tripId>/<destId>/<actId>/delete', methods=['POST'])
@@ -370,10 +367,6 @@ def newActivity(tripId, destId):
     destName = db.runQuery(query, params)[0][0]
 
     return render_template("newActivity.html", title="- Add Activity", legend="Add Activity", tripId=tripId, destId=destId, tripName=tripName, destName=destName, form=form, username=current_user.username.capitalize())
-
-
-
-    return redirect(url_for('showDestination', tripId=tripId, destId=destId))
 
 # add new user 
 @app.route('/newuser', methods=['GET', 'POST'])
