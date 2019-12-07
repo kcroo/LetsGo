@@ -384,7 +384,8 @@ def newUser():
         query = "INSERT INTO user(username, email, pw) VALUES(%s, %s, %s)"
         params = (form.username.data.lower(), form.email.data, hashedPassword)
         db.runQuery(query, params)
-        return redirect(url_for('index'))
+        flash('Your account has been created!  You are now able to log in.', 'success')
+        return redirect(url_for('login'))
 
     return render_template("newuser.html", title=" - New User", form=form)
 
