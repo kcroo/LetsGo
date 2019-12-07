@@ -6,7 +6,6 @@
 {% block body %}
 <div class="container">
     <!-- lists trip names, with edit/delete buttons -->
-    {% if trips %}
         <br>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -83,7 +82,6 @@
                 {% endfor %}
             </tbody>
         </table>
-    {% endif %}
     <div align="left">
         <a class= "btn btn-success" href="{{ url_for('newTrip') }}">Add New Trip</a>
     </div>    
