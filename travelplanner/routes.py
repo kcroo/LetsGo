@@ -93,7 +93,6 @@ def myTrips():
     query = "SELECT * FROM trip WHERE userId = %s"
     params = (str(current_user.id))
     trips = db.runQuery(query, params) 
-    print(current_user.username)
 
     return render_template("mytrips.html", title="- My Trips", trips=trips, username=current_user.username.capitalize())
 
@@ -208,7 +207,6 @@ def showDestination(tripId, destId):
     query = "SELECT a.id, a.name, at.name, a.cost, a.notes FROM activity a LEFT JOIN activityType at ON a.typeId = at.id INNER JOIN destinationActivity da ON da.activityId = a.id WHERE da.destinationId = %s"
     params = (destId,)
     activities = db.runQuery(query, params)
-    print(activities)
 
     query = "SELECT t.name, d.name FROM trip t INNER JOIN destination d ON d.tripId = t.id WHERE d.id = %s"
     params = (destId,)
@@ -339,7 +337,6 @@ def newActivity(tripId, destId):
         # get id of activity just inserted
         query = "SELECT LAST_INSERT_ID()"
         actId = db.runQuery(query)[0][0]
-        print(actId)
 
         query = 'INSERT INTO destinationActivity (destinationId, activityId) VALUES (%s, %s)'
         params = (destId, actId)
@@ -408,7 +405,6 @@ def login():
             flash('You are now logged in.', 'success')
             return redirect(url_for('index'))
         else:
-            print("invalid password")
             flash('Login failed. Please check username and password.', 'danger')
 
     return render_template("login.html", title="- Login", form=form)
