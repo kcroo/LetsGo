@@ -4,9 +4,15 @@
     border-bottom: 2px solid black;
 }
 
-#title
+.title-font
 {
     font-family: 'Damion', cursive;
+}
+
+#title-index
+{
+    text-align: center;
+    font-size: 4em;
 }
 
 .required::before  
